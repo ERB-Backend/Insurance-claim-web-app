@@ -1,0 +1,22 @@
+[
+  {
+    "id": 0,
+    "policyNumber": 9405822,
+    "amount": 1250
+  },
+  {
+    "id": 1,
+    "policyNumber": 9405820,
+    "amount": 1500
+  },
+  {
+    "id": 2,
+    "policyNumber": 9405822,
+    "amount": 1400
+  },
+  {
+    "id": 3,
+    "policyNumber": 9405822,
+    "amount": 1200
+  }
+]

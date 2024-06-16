@@ -11,18 +11,18 @@
     <meta name="author" content="" />
     <title>Insurance Claim Web App</title>
     <!-- loader-->
-    <link href="assets/css/pace.min.css" rel="stylesheet" />
-    <script src="assets/js/pace.min.js"></script>
+    <link href="/css/pace.min.css" rel="stylesheet" />
+    <script src="/js/pace.min.js"></script>
     <!--favicon-->
-    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap core CSS-->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <!-- animate CSS-->
-    <link href="assets/css/animate.css" rel="stylesheet" type="text/css" />
+    <link href="/css/animate.css" rel="stylesheet" type="text/css" />
     <!-- Icons CSS-->
-    <link href="assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="/css/icons.css" rel="stylesheet" type="text/css" />
     <!-- Custom Style-->
-    <link href="assets/css/app-style.css" rel="stylesheet" />
+    <link href="/css/app-style.css" rel="stylesheet" />
   </head>
 
   <body class="bg-theme bg-theme1">
@@ -36,43 +36,37 @@
 
     <!-- Start wrapper-->
     <div id="wrapper">
-      <div class="card card-authentication1 mx-auto my-4">
+      <div class="loader-wrapper">
+        <div class="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <div class="card card-authentication1 mx-auto my-5">
         <div class="card-body">
           <div class="card-content p-2">
             <div class="text-center">
-              <img src="assets/images/logo-icon.png" alt="logo icon" />
+              <img src="/images/logo-icon.png" alt="logo icon" />
             </div>
             <div class="card-title text-uppercase text-center py-3">
-              Sign Up
+              Sign In
             </div>
             <form>
               <div class="form-group">
-                <label for="exampleInputName" class="sr-only">Name</label>
-                <div class="position-relative has-icon-right">
-                  <input
-                    type="text"
-                    id="exampleInputName"
-                    class="form-control input-shadow"
-                    placeholder="Enter Your Name"
-                  />
-                  <div class="form-control-position">
-                    <i class="icon-user"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputEmailId" class="sr-only"
-                  >Email ID</label
+                <label for="exampleInputUsername" class="sr-only"
+                  >Username</label
                 >
                 <div class="position-relative has-icon-right">
                   <input
                     type="text"
-                    id="exampleInputEmailId"
+                    id="exampleInputUsername"
                     class="form-control input-shadow"
-                    placeholder="Enter Your Email ID"
+                    placeholder="Enter Username"
                   />
                   <div class="form-control-position">
-                    <i class="icon-envelope-open"></i>
+                    <i class="icon-user"></i>
                   </div>
                 </div>
               </div>
@@ -82,34 +76,35 @@
                 >
                 <div class="position-relative has-icon-right">
                   <input
-                    type="text"
+                    type="password"
                     id="exampleInputPassword"
                     class="form-control input-shadow"
-                    placeholder="Choose Password"
+                    placeholder="Enter Password"
                   />
                   <div class="form-control-position">
                     <i class="icon-lock"></i>
                   </div>
                 </div>
               </div>
-
-              <div class="form-group">
-                <div class="icheck-material-white">
-                  <input type="checkbox" id="user-checkbox" />
-                  <label for="user-checkbox"
-                    >I Agree With Terms & Conditions</label
-                  >
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <div class="icheck-material-white">
+                    <input type="checkbox" id="user-checkbox" checked="" />
+                    <label for="user-checkbox">Remember me</label>
+                  </div>
                 </div>
+                <!-- <div class="form-group col-6 text-right">
+                  <a href="reset-password.html">Reset Password</a>
+                </div> -->
               </div>
-
-              <button
-                type="button"
-                class="btn btn-light btn-block waves-effect waves-light"
-              >
-                Sign Up
+              <button type="button" class="btn btn-light btn-block">
+                Sign In
               </button>
-              <div class="text-center mt-3">Sign Up With</div>
-
+              <button type="button" class="btn btn-light btn-block" onclick="location.href='/users/dashboard'">
+                Demo Account
+              </button>
+              <div class="text-center mt-3">Sign In With</div>
+              </div>
               <div class="form-row mt-4">
                 <div class="form-group mb-0 col-6">
                   <button type="button" class="btn btn-light btn-block">
@@ -118,7 +113,7 @@
                 </div>
                 <div class="form-group mb-0 col-6 text-right">
                   <button type="button" class="btn btn-light btn-block">
-                    <i class="fa fa-apple"></i> Apple ID
+                    <i class="fa fa-apple"></i> Apple Id
                   </button>
                 </div>
               </div>
@@ -127,7 +122,7 @@
         </div>
         <div class="card-footer text-center py-3">
           <p class="text-warning mb-0">
-            Already have an account? <a href="login.html"> Sign In here</a>
+            Do not have an account? <a href="/register"> Sign Up here</a>
           </p>
         </div>
       </div>
@@ -141,14 +136,14 @@
     <!--wrapper-->
 
     <!-- Bootstrap core JavaScript-->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
     <!-- sidebar-menu js -->
-    <script src="assets/js/sidebar-menu.js"></script>
+    <script src="/js/sidebar-menu.js"></script>
 
     <!-- Custom scripts -->
-    <script src="assets/js/app-script.js"></script>
+    <script src="/js/app-script.js"></script>
   </body>
 </html>
