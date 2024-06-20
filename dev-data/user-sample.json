@@ -1,0 +1,72 @@
+[
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "photo": "https://example.com/john.jpg",
+    "password": "password123",
+    "passwordConfirm": "password123"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "photo": "https://example.com/jane.jpg",
+    "password": "securepass",
+    "passwordConfirm": "securepass"
+  },
+  {
+    "name": "Michael Johnson",
+    "email": "michael.johnson@example.com",
+    "photo": "https://example.com/michael.jpg",
+    "password": "password456",
+    "passwordConfirm": "password456"
+  },
+  {
+    "name": "Emily Davis",
+    "email": "emily.davis@example.com",
+    "photo": "https://example.com/emily.jpg",
+    "password": "password789",
+    "passwordConfirm": "password789"
+  },
+  {
+    "name": "David Wilson",
+    "email": "david.wilson@example.com",
+    "photo": "https://example.com/david.jpg",
+    "password": "securepassword",
+    "passwordConfirm": "securepassword"
+  },
+  {
+    "name": "Sarah Thompson",
+    "email": "sarah.thompson@example.com",
+    "photo": "https://example.com/sarah.jpg",
+    "password": "password123abc",
+    "passwordConfirm": "password123abc"
+  },
+  {
+    "name": "Robert Anderson",
+    "email": "robert.anderson@example.com",
+    "photo": "https://example.com/robert.jpg",
+    "password": "securepassword456",
+    "passwordConfirm": "securepassword456"
+  },
+  {
+    "name": "Jessica Taylor",
+    "email": "jessica.taylor@example.com",
+    "photo": "https://example.com/jessica.jpg",
+    "password": "password789xyz",
+    "passwordConfirm": "password789xyz"
+  },
+  {
+    "name": "Christopher Brown",
+    "email": "christopher.brown@example.com",
+    "photo": "https://example.com/christopher.jpg",
+    "password": "securepassword123",
+    "passwordConfirm": "securepassword123"
+  },
+  {
+    "name": "Ashley Miller",
+    "email": "ashley.miller@example.com",
+    "photo": "https://example.com/ashley.jpg",
+    "password": "password456abc",
+    "passwordConfirm": "password456abc"
+  }
+]

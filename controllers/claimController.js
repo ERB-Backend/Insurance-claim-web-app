@@ -1,28 +1,28 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const Claim = require('../models/claimModel');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const Claim = require("../models/claimModel");
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: "./config.env" });
 
 const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
+  "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
-mongoose.connect(DB, {}).then(() => console.log('DB connection successful'));
+mongoose.connect(DB, {}).then(() => console.log("DB connection successful"));
 
 exports.getAllClaims = async (req, res) => {
   try {
-    const claims = await Claim.find();
-    res.status(200).json({
-      status: 'success',
-      results: claims.length,
-      data: {
-        claims,
-      },
-    });
+    return await Claim.find();
+    // res.status(200).json({
+    //   status: 'success',
+    //   results: claims.length,
+    //   data: {
+    //     claims,
+    //   },
+    // });
   } catch (err) {
     res.status(404).json({
-      status: 'fail',
+      status: "fail",
       message: err,
     });
   }
@@ -31,10 +31,10 @@ exports.getAllClaims = async (req, res) => {
 exports.createClaim = async (req, res) => {
   try {
     await Claim.create(req.body);
-    res.redirect('/users/dashboard');
+    res.redirect("/users/dashboard");
   } catch (err) {
     res.status(400).json({
-      status: 'fail',
+      status: "fail",
       message: err.message,
     });
   }
