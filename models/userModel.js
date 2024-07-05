@@ -2,6 +2,13 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: [false, "A User must have a userId"],
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
   name: {
     type: String,
     required: [true, "A User must have a name"],
