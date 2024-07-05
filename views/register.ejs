@@ -45,13 +45,14 @@
             <div class="card-title text-uppercase text-center py-3">
               Sign Up
             </div>
-            <form>
+            <form method="post" action="/users/signup">
               <div class="form-group">
-                <label for="exampleInputName" class="sr-only">Name</label>
+                <label for="name" class="sr-only">Name</label>
                 <div class="position-relative has-icon-right">
                   <input
                     type="text"
-                    id="exampleInputName"
+                    id="name"
+                    name = "name"
                     class="form-control input-shadow"
                     placeholder="Enter Your Name"
                   />
@@ -61,15 +62,16 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="exampleInputEmailId" class="sr-only"
-                  >Email ID</label
+                <label for="userId" class="sr-only"
+                  >User Id</label
                 >
                 <div class="position-relative has-icon-right">
                   <input
                     type="text"
-                    id="exampleInputEmailId"
+                    id="userId"
+                    name="userId"
                     class="form-control input-shadow"
-                    placeholder="Enter Your Email ID"
+                    placeholder="Enter Your User Id"
                   />
                   <div class="form-control-position">
                     <i class="icon-envelope-open"></i>
@@ -77,13 +79,14 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="exampleInputPassword" class="sr-only"
+                <label for="password" class="sr-only"
                   >Password</label
                 >
                 <div class="position-relative has-icon-right">
                   <input
-                    type="text"
-                    id="exampleInputPassword"
+                    type="password"
+                    id="password"
+                    name="password"
                     class="form-control input-shadow"
                     placeholder="Choose Password"
                   />
@@ -92,10 +95,26 @@
                   </div>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="passwordConfirm" class="sr-only"
+                  > Confirm Password</label
+                >
+                <div class="position-relative has-icon-right">
+                  <input
+                    type="password"
+                    id="passwordConfirm"
+                    name="passwordConfirm"
+                    class="form-control input-shadow"
+                    placeholder="Confirm Password"
+                  />
+                  <div class="form-control-position">
+                    <i class="icon-lock"></i>
+                  </div>
+                </div>
 
               <div class="form-group">
                 <div class="icheck-material-white">
-                  <input type="checkbox" id="user-checkbox" />
+                  <input type="checkbox" id="user-checkbox" required/>
                   <label for="user-checkbox"
                     >I Agree With Terms & Conditions</label
                   >
@@ -103,14 +122,14 @@
               </div>
 
               <button
-                type="button"
+                type="submit"
                 class="btn btn-light btn-block waves-effect waves-light"
               >
                 Sign Up
               </button>
               <div class="text-center mt-3">Sign Up With</div>
 
-              <div class="form-row mt-4">
+              <!-- <div class="form-row mt-4">
                 <div class="form-group mb-0 col-6">
                   <button type="button" class="btn btn-light btn-block">
                     <i class="fa fa-google-plus"></i> Google
@@ -121,7 +140,7 @@
                     <i class="fa fa-apple"></i> Apple ID
                   </button>
                 </div>
-              </div>
+              </div> -->
             </form>
           </div>
         </div>

@@ -53,17 +53,18 @@
             <div class="card-title text-uppercase text-center py-3">
               Sign In
             </div>
-            <form>
+            <form action="/users/login" method="post">
               <div class="form-group">
-                <label for="exampleInputUsername" class="sr-only"
-                  >Username</label
+                <label for="userId" class="sr-only"
+                  >User Id</label
                 >
                 <div class="position-relative has-icon-right">
                   <input
                     type="text"
-                    id="exampleInputUsername"
+                    id="userId"
+                    name="userId"
                     class="form-control input-shadow"
-                    placeholder="Enter Username"
+                    placeholder="Enter User Id"
                   />
                   <div class="form-control-position">
                     <i class="icon-user"></i>
@@ -71,13 +72,14 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="exampleInputPassword" class="sr-only"
+                <label for="password" class="sr-only"
                   >Password</label
                 >
                 <div class="position-relative has-icon-right">
                   <input
                     type="password"
-                    id="exampleInputPassword"
+                    id="password"
+                    name="password"
                     class="form-control input-shadow"
                     placeholder="Enter Password"
                   />
@@ -97,7 +99,7 @@
                   <a href="reset-password.html">Reset Password</a>
                 </div> -->
               </div>
-              <button type="button" class="btn btn-light btn-block">
+              <button type="submit" class="btn btn-light btn-block">
                 Sign In
               </button>
               <button type="button" class="btn btn-light btn-block" onclick="location.href='/users/dashboard'">
@@ -122,7 +124,7 @@
         </div>
         <div class="card-footer text-center py-3">
           <p class="text-warning mb-0">
-            Do not have an account? <a href="/register"> Sign Up here</a>
+            Do not have an account? <a href="/users/signup"> Sign Up here</a>
           </p>
         </div>
       </div>
