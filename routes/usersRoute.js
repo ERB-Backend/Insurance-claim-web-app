@@ -1,17 +1,26 @@
 var express = require("express");
 const claimController = require("../controllers/claimController");
 const authController = require("../controllers/authController");
+const userController = require("../controllers/userController");
 var router = express.Router();
 /* GET users listing. */
 
-router.route("/").get(function (req, res, next) {
-  res.render("profile", {});
+router.post(
+  "/updateProfile",
+  authController.protect,
+  userController.updatePassword
+);
+router.route("/").get(authController.protect, function (req, res, next) {
+  const userName = req.session.user.name;
+  res.render("profile", { userName: userName });
 });
 
-router.route("/dashboard").get(async (req, res, next) => {
-  const claims = await claimController.getAllClaims(req, res);
-  res.render("test", { claims: claims });
-});
+router
+  .route("/dashboard")
+  .get(authController.protect, async (req, res, next) => {
+    const claims = await claimController.getAllClaims(req, res);
+    res.render("test", { claims: claims });
+  });
 //------ steve start ------
 router.route("/allClaims").get(async (req, res, next) => {
   try {
@@ -223,8 +232,10 @@ router.route("/userByUserIdUpdate").get(async (req, res, next) => {
 
 router
   .route("/forms")
-  .get(function (req, res, next) {
-    res.render("forms", {});
+  .get(authController.protect, (req, res, next) => {
+    userId = req.session.user.userId;
+    userName = req.session.user.name;
+    res.render("forms", { userId: userId, name: userName });
   })
   .post(claimController.createClaim);
 
@@ -236,12 +247,6 @@ router
   })
   .post(authController.signup);
 
-router
-  .route("/login")
-  .get((req, res, next) => {
-    if (req.session.user) res.render("forms", {});
-    else res.render("login", {});
-  })
-  .post(authController.login);
+router.route("/logout").post(authController.logout);
 
 module.exports = router;

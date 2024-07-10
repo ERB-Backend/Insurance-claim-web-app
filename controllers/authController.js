@@ -1,15 +1,5 @@
 const User = require("../models/userModel");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
-
-dotenv.config({ path: "./config.env" });
-
-const DB = process.env.DATABASE.replace(
-  "<PASSWORD>",
-  process.env.DATABASE_PASSWORD
-);
-mongoose.connect(DB, {}).then(() => console.log("DB connection successful"));
 
 exports.signup = asyncHandler(async (req, res, next) => {
   await User.create(req.body);
@@ -26,5 +16,31 @@ exports.login = asyncHandler(async (req, res, next) => {
     // return res.render("/login", { error: "Invalid Username or Password" });
   }
   req.session.user = user;
+  res.locals.userId = req.session.user.userId;
+  res.locals.name = req.session.user.name;
+  res.locals.isAuthenticated = !!req.session.user;
   res.render("forms", {});
 });
+
+exports.protect = asyncHandler(async (req, res, next) => {
+  if (req.session.user) {
+    console.log(req.session.user);
+    next();
+  } else {
+    res.status(401).json({ message: "Unauthorized: Please log in" });
+  }
+});
+
+exports.logout = (req, res, next) => {
+  // logout logic
+  req.session.user = null;
+
+  //   req.session.save(function (err) {
+  //     if (err) next(err)
+
+  //     req.session.regenerate(function (err) {
+  //       if (err) next(err)
+  res.redirect("/");
+  // })
+  //   })
+};
