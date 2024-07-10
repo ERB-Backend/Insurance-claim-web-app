@@ -212,9 +212,13 @@
       <div class="row">
         <div class="col-12 col-lg-8 col-xl-8">
           <div class="card">
-            <button id="sortByCompanyName"
+            <!-- <button id="sortByCompanyName"
               style="width:150px; height:30px;background-color:#0077b6;color:#ffffff;font-size:16px;border:none;border-radius:4px;cursor:pointer;">Sort
-              <span id="sortArrow">&#8595</span></button>
+              <span id="sortArrow">&#8595</span></button> -->
+            <button id="sortByCreatedAt"
+              style="width:150px; height:30px;background-color:#3816e1;color:#ffffff;font-size:16px;border:none;border-radius:4px;cursor:pointer;"><img
+                src="/views/arrow-up-100.png" alt=""></button>
+
             <div id="dataContainer"></div>
 
             <div class="row">
@@ -309,11 +313,24 @@
 
       <script>
         //let sortOrder = "asc";
-        const sortByCompanyNameButton = document.getElementById('sortByCompanyName');
-        sortByCompanyNameButton.addEventListener('click', () => {
-          //alert("sortByCompanyNameButton click");
+        const sortByCreatedAtButton = document.getElementById('sortByCreatedAt');
+        let isArrowUp = true;
+        sortByCreatedAtButton.addEventListener('click', () => {
+          alert("sortByCreatedAtButton click");
           //sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-          fetchAndSortData();
+          if (isArrowUp) {
+            arrowImage.src = '/views/arrow-up-100.png';
+            arrowImage.alt = 'Arrow Down';
+
+          } else {
+            arrowImage.src = '/views/arrow-down-100.png';
+            arrowImage.alt = 'Arrow Up';
+
+          }
+          isArrowUp = !isArrowUp;
+
+
+          //fetchAndSortData();
         });
         async function fetchAndSortData() {
           //alert("fetchAndSortData");
@@ -335,14 +352,14 @@
 
 
 
-          fetch('/users/sort?sortByCompanyName=-1')
-            .then(response => response.json())
-            .then(data => {
-              const tableData = Object.entries(data).map(([key, value]) => ({
-                key, ...value,
-              }));
-              //alert("tableData is  ok" + tableData);
-            });
+          // fetch('/users/sort?sortByCompanyName=-1')
+          //   .then(response => response.json())
+          //   .then(data => {
+          //     const tableData = Object.entries(data).map(([key, value]) => ({
+          //       key, ...value,
+          //     }));
+          //     //alert("tableData is  ok" + tableData);
+          //   });
 
           const claimTable = document.getElementById('claimTable').tBodies[0];
           //claimTable.innerHTML = '';
@@ -358,13 +375,13 @@
           //   console.error('Error sortByCompanyName:', error);
           // });
 
-          tableData.forEach(item => {
-            console.log('item : ', item);
-            alert("item  ok" + item);
+          // tableData.forEach(item => {
+          //   console.log('item : ', item);
+          //   alert("item  ok" + item);
 
-          }).catch(error => {
-            console.error('Error sortByCompanyName:', error);
-          });
+          // }).catch(error => {
+          //   console.error('Error sortByCompanyName:', error);
+          // });
 
 
 

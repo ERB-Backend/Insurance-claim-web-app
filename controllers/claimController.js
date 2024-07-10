@@ -403,6 +403,24 @@ decodedQueryObject hasOwnProperty account is NO
   }
 
 }
+function testConnect() {
+  const { MongoClient } = require('mongodb');
+  const client = new MongoClient('mongodb://localhost:27017');
+  const db = client.db('test');
+
+
+
+}
+function testRemoteConnect() {
+  const { MongoClient } = require('mongodb');
+  const uri = "mongodb+srv://demo:btWOND4S2uLxMNjB@cluster0.bd9bzhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true";
+  const client = new MongoClient(uri);
+  const db = client.db('test').collection('users');
+
+
+
+
+}
 function testOnView() {
   // const { MongoClient } = require('mongodb');
   // const client = new MongoClient('mongodb://localhost:27017');
@@ -431,16 +449,16 @@ function testOnView() {
         $joinSchema: {
           BSONType: "objects",
           required: ["name"],
-          properties:{
-            BSONType:"string",
-            description:"must be a string and is required"
+          properties: {
+            BSONType: "string",
+            description: "must be a string and is required"
           },//END properties
         }//END joinSchema
       }//END validator
     }//END 
   );//END createView
 
-db.user_claims.find({userId:steve});
+  db.user_claims.find({ userId: steve });
 
 
 };
