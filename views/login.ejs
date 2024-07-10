@@ -53,11 +53,9 @@
             <div class="card-title text-uppercase text-center py-3">
               Sign In
             </div>
-            <form action="/users/login" method="post">
+            <form action="/login" method="post">
               <div class="form-group">
-                <label for="userId" class="sr-only"
-                  >User Id</label
-                >
+                <label for="userId" class="sr-only">User Id</label>
                 <div class="position-relative has-icon-right">
                   <input
                     type="text"
@@ -72,9 +70,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="password" class="sr-only"
-                  >Password</label
-                >
+                <label for="password" class="sr-only">Password</label>
                 <div class="position-relative has-icon-right">
                   <input
                     type="password"
@@ -102,10 +98,14 @@
               <button type="submit" class="btn btn-light btn-block">
                 Sign In
               </button>
-              <button type="button" class="btn btn-light btn-block" onclick="location.href='/users/dashboard'">
+              <button
+                type="button"
+                class="btn btn-light btn-block"
+                onclick="location.href='/admin'"
+              >
                 Demo Account
               </button>
-              <div class="text-center mt-3">Sign In With</div>
+              <!-- <div class="text-center mt-3">Sign In With</div>
               </div>
               <div class="form-row mt-4">
                 <div class="form-group mb-0 col-6">
@@ -118,7 +118,7 @@
                     <i class="fa fa-apple"></i> Apple Id
                   </button>
                 </div>
-              </div>
+              </div> -->
             </form>
           </div>
         </div>

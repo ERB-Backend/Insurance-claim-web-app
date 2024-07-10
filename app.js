@@ -7,7 +7,9 @@ const session = require("express-session");
 
 var indexRouter = require("./routes/indexRoute");
 var usersRouter = require("./routes/usersRoute");
+const authController = require("./controllers/authController");
 
+const { addUserInfo } = require("./utils/middleware");
 var app = express();
 
 app.use(
@@ -24,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/users", addUserInfo, usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
