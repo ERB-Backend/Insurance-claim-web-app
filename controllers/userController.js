@@ -1,6 +1,7 @@
 const Users = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 
+// Start by Michael
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   const userId = req.session.user._id;
   console.log(userId);
@@ -26,6 +27,7 @@ exports.deleteCustomer = async (req, res) => {
     console.log(error);
   }
 };
+// End by Michael
 
 exports.getAllUsers = async (req, res) => {
   try {
