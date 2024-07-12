@@ -17,6 +17,16 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   res.redirect("/users");
 });
 
+exports.deleteCustomer = async (req, res) => {
+  try {
+    const userId = req.session.user.userId;
+    await Users.deleteOne({ name: userId });
+    res.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.getAllUsers = async (req, res) => {
   try {
     return await Users.find();

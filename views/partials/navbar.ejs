@@ -64,11 +64,14 @@
                 </div>
                 <div class="media-body">
                   <% if (isAuthenticated) { %>
-                  <p>Welcome, <%= name %>!</p>
+                  <p>
+                    Welcome, <%= name.charAt(0).toUpperCase() + name.slice(1)
+                    %>!
+                  </p>
                   <% } else { %>
                   <p>Please log in</p>
                   <% } %>
-                  <p class="user-subtitle"><%=userId%></p>
+                  <p class="user-subtitle">User ID: <%=userId%></p>
                 </div>
               </div>
             </a>

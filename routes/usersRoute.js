@@ -1,4 +1,5 @@
 var express = require("express");
+const Claim = require("../models/claimModel");
 const claimController = require("../controllers/claimController");
 const authController = require("../controllers/authController");
 const userController = require("../controllers/userController");
@@ -10,9 +11,12 @@ router.post(
   authController.protect,
   userController.updatePassword
 );
-router.route("/").get(authController.protect, function (req, res, next) {
+router.route("/").get(authController.protect, async function (req, res, next) {
   const userName = req.session.user.name;
-  res.render("profile", { userName: userName });
+  const claims = await Claim.find({ userId: req.session.user._id }).sort({
+    createdAt: 1,
+  });
+  res.render("profile", { userName: userName, claims });
 });
 
 router
@@ -248,5 +252,6 @@ router
   .post(authController.signup);
 
 router.route("/logout").post(authController.logout);
+router.route("/deleteAccount").post(userController.deleteCustomer);
 
 module.exports = router;

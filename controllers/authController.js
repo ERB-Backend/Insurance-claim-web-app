@@ -17,8 +17,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
   req.session.user = user;
   res.locals.userId = req.session.user.userId;
-  res.locals.name = req.session.user.name;
-  res.locals.isAuthenticated = !!req.session.user;
+  let word = req.session.user.name;
+  res.locals.name = word.charAt(0).toUpperCase() + word.slice(1);
+  res.locals.isAuthenticated = req.session.user;
   res.render("forms", {});
 });
 

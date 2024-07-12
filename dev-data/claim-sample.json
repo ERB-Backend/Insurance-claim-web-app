@@ -1,22 +1,239 @@
 [
   {
-    "id": 0,
-    "policyNumber": 9405822,
-    "amount": 1250
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a1"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 123456,
+    "amount": 111111,
+    "status": "pending",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-11T03:24:43.059Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-11T03:24:43.058Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-11T03:24:43.058Z"
+    }
   },
   {
-    "id": 1,
-    "policyNumber": 9405820,
-    "amount": 1500
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a2"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 234567,
+    "amount": 222222,
+    "status": "processing",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-12T10:15:30.000Z"
+        }
+      },
+      {
+        "status": "processing",
+        "date": {
+          "$date": "2024-07-12T10:15:30.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-12T10:15:30.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-12T10:15:30.000Z"
+    }
   },
   {
-    "id": 2,
-    "policyNumber": 9405821,
-    "amount": 1400
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a3"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 345678,
+    "amount": 333333,
+    "status": "pending",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-13T15:45:20.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-13T15:45:20.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-13T15:45:20.000Z"
+    }
   },
   {
-    "id": 3,
-    "policyNumber": 9405826,
-    "amount": 1200
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a4"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 456789,
+    "amount": 444444,
+    "status": "pending",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-14T08:30:10.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-14T08:30:10.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-14T08:30:10.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a5"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 567890,
+    "amount": 555555,
+    "status": "pending",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-15T12:20:05.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-15T12:20:05.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-15T12:20:05.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a6"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 678901,
+    "amount": 666666,
+    "status": "processing",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-16T17:55:40.000Z"
+        }
+      },
+      {
+        "status": "processing",
+        "date": {
+          "$date": "2024-07-16T17:55:40.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-16T17:55:40.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-16T17:55:40.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a7"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 789012,
+    "amount": 777777,
+    "status": "approved",
+    "messages": [
+      {
+        "status": "approved",
+        "date": {
+          "$date": "2024-07-17T09:10:25.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-17T09:10:25.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-17T09:10:25.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a8"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 890123,
+    "amount": 888888,
+    "status": "pending",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-18T14:35:50.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-18T14:35:50.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-18T14:35:50.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "668f507b0b2a79a7c1dfe2a9"
+    },
+    "userId": {
+      "$oid": "6688058db58ce72799586539"
+    },
+    "policyNumber": 901234,
+    "amount": 999999,
+    "status": "pending",
+    "messages": [
+      {
+        "status": "pending",
+        "date": {
+          "$date": "2024-07-19T20:05:15.000Z"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": "2024-07-19T20:05:15.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-07-19T20:05:15.000Z"
+    }
   }
 ]

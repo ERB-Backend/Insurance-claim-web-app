@@ -25,7 +25,8 @@ exports.getAllClaims = async (req, res) => {
 };
 exports.createClaim = async (req, res) => {
   try {
-    await Claim.create(req.body);
+    const claimDetail = { ...req.body, userId: req.session.user._id };
+    await Claim.create(claimDetail);
     res.redirect("/users/dashboard");
   } catch (err) {
     res.status(400).json({
