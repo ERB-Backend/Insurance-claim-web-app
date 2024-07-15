@@ -78,6 +78,7 @@ exports.getAllClaims = async (req, res) => {
     });
   }
 };
+
 exports.createClaim = async (req, res) => {
   try {
     const claimDetail = {
@@ -94,7 +95,73 @@ exports.createClaim = async (req, res) => {
   }
 };
 
+exports.getUserClaims = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    return await Claim.find({ userId: userId }).sort({ createdAt: -1 });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
 // End By Michael
+
+// ---------Start by Daniel-----------
+
+exports.sortUserClaims = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const expr = req.body.field;
+
+    switch (expr) {
+      case "policyNumber":
+        return await Claim.find({ userId: userId }).sort({
+          policyNumber: -1,
+        });
+        break;
+
+      case "amount":
+        return await Claim.find({ userId: userId }).sort({
+          amount: -1,
+        });
+        break;
+
+      case "createdAt":
+        return await Claim.find({ userId: userId }).sort({
+          createdAt: -1,
+        });
+        break;
+
+      case "status":
+        return await Claim.find({ userId: userId }).sort({
+          status: 1,
+        });
+        break;
+
+      default:
+        return await Claim.find({ userId: userId }).sort({
+          createdAt: -1,
+          policyName: 1,
+        });
+        break;
+    }
+    res.status(200).json({
+      status: "success",
+      results: claims.length,
+      data: {
+        claims,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
 
 //------ steve ------
 //1.01

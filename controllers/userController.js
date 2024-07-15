@@ -22,6 +22,7 @@ exports.deleteCustomer = async (req, res) => {
   try {
     const userId = req.session.user.userId;
     await Users.deleteOne({ name: userId });
+    req.session.user = null;
     res.redirect("/");
   } catch (error) {
     console.log(error);

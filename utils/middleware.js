@@ -4,7 +4,7 @@ function addUserInfo(req, res, next) {
   if (req.session.user) {
     res.locals.userId = req.session.user.userId;
     res.locals.name = req.session.user.name;
-    res.locals.isAuthenticated = !!req.session.user;
+    res.locals.isAuthenticated = req.session.user;
   } else {
     res.locals.userId = null;
     res.locals.name = null;

@@ -29,6 +29,16 @@
   <link href="/css/app-style.css" rel="stylesheet" />
 </head>
 
+<style>
+  button {
+    border:none; 
+    background-color: rgba(7, 91, 129, 0.288); 
+    color:whitesmoke; 
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif,Courier;
+}
+</style>
+
 <body class="bg-theme bg-theme1">
   <!-- Start wrapper-->
   <div id="wrapper">
@@ -143,10 +153,10 @@
 
       <div class="row">
         <div class="col-12 col-lg-8 col-xl-8">
-          <div class="card">
+          <!-- <div class="card">
             <button id="sortByCompanyName"
               style="width:150px; height:30px;background-color:#0077b6;color:#ffffff;font-size:16px;border:none;border-radius:4px;cursor:pointer;">Sort
-              <span id="sortArrow">&#8595</span></button>
+              <span id="sortArrow">&#8595</span></button> -->
             <div id="dataContainer"></div>
 
             <div class="row">
@@ -158,20 +168,39 @@
                   <div class="table-responsive">
                     <table id="claimTable" class="table align-items-center table-flush table-borderless">
                       <thead>
-                        <tr>
-                          <th>Company Name</th>
-                          <th>Policy Number</th>
+                        <form action="/users/dashboard" method="post">
+                          <tr>
+                            <!--   <th><button type="sumbit"  id="companyName" name="field" value="companyName" >Company Name</button></th>  -->
+                            <th><button                                  
+                                type="submit" id="policyNumber" name="field" value="policyNumber"> Policy
+                                  Number</button></th>
+                            <th><button                                  
+                                type="submit" id="amount" name="field" value="amount">Claim Amount</button>
+                            </th>
+                            <th><button                                  
+                                type="submit" id="createdAt" name="field" value="createdAt">Date</button></th>
+                            <th><button                                                           
+                                type="submit" id="status" name="field" value="status">Status</button>
+                            </th>
+                            <!--  <th>Status</th>   -->
+                          </tr>
+
+                        </form>
+
+
+                          <!-- <th>Company Name</th> -->
+                          <!-- <th>Policy Number</th>
                           <th>Claim Amount</th>
                           <th>Date</th>
-                          <th>Status</th>
+                          <th>Status</th> -->
                         </tr>
                       </thead>
                       <tbody>
                         <% claims.forEach(claim=>{ %>
                           <tr>
-                            <td>
+                            <!-- <td>
                               <%=claim.companyName %>
-                            </td>
+                            </td> -->
                             <td>#<%=claim.policyNumber %>
                             </td>
                             <td>$ <%=claim.amount %>
@@ -239,7 +268,7 @@
       <!-- Index js -->
       <script src="/js/index.js"></script>
 
-      <script>
+      <!-- <script>
         //let sortOrder = "asc";
         const sortByCompanyNameButton = document.getElementById('sortByCompanyName');
         sortByCompanyNameButton.addEventListener('click', () => {
@@ -342,7 +371,7 @@
         };//End fetchAndSortData
 
 
-      </script>
+      </script> -->
 </body>
 
 </html>
