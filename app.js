@@ -44,6 +44,38 @@ app.use(function (err, req, res, next) {
   // res.status(err.status || 500);
   // res.render("error");
 
+  if (err.name === "ValidationError" && req.session.user) {
+    // Handle validation errors
+    handleValidationError(err, req);
+    console.log("🔥🔥🔥🔥🔥🔥 Error Middleware", req.session.user);
+    res.redirect("/users");
+    next();
+  }
+  if (err.name === "ValidationError" && !req.session.user) {
+    handleValidationError(err, req);
+    console.log("🔥🔥🔥🔥🔥🔥 Error Middleware", err);
+    res.redirect("/users");
+    next();
+  }
+
+  function handleValidationError(err, req) {
+    // Extract error messages
+    const errorMessages = Object.values(err.errors).map(
+      (error) => error.message
+    );
+
+    // Join all error messages into a single string
+    const errorMessage = errorMessages.join(". ");
+
+    // Store the error message in the session
+    if (!req.session.user) {
+      let error = errorMessage;
+      return res.render("login", { error: error });
+    } else {
+      req.session.user.error = errorMessage;
+    }
+  }
+
   // Log the error
   console.error(err.stack);
 

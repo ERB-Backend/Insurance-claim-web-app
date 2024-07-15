@@ -35,9 +35,24 @@ router.post(
 router.route("/").get(authController.protect, async function (req, res, next) {
   const userName = req.session.user.name;
   const claims = await Claim.find({ userId: req.session.user._id }).sort({
-    createdAt: 1,
+    createdAt: -1,
   });
-  res.render("profile", { userName: userName, claims });
+  let error = null;
+  let message = null;
+  if (req.session.user && req.session.user.error) {
+    error = req.session.user.error;
+    delete req.session.user.error;
+  }
+  if (req.session.user && req.session.user.message) {
+    message = req.session.user.message;
+    delete req.session.user.message;
+  }
+  res.render("profile", {
+    userName: userName,
+    claims,
+    error: error,
+    message: message,
+  });
 });
 
 router

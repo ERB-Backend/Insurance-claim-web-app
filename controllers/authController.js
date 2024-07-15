@@ -13,7 +13,8 @@ exports.login = asyncHandler(async (req, res, next) => {
     // return res
     // .status(401)
     // .json({ status: "fail", message: "Incorrect username or password" });
-    return res.render("login", { error: "Invalid Username or Password" });
+    let error = "Invalid Username or Password";
+    return res.render("login", { error: error });
   }
   req.session.user = user;
   res.locals.userId = req.session.user.userId;
