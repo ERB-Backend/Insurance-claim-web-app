@@ -1,0 +1,45 @@
+var express = require('express');
+var router = express.Router();
+const MongoClient = require('mongodb').MongoClient;
+const client = new MongoClient("mongodb://localhost:27017/");
+
+router.get('/', (req, res, next)=>{
+    
+    if(req.session.user) res.render ("login-ed")
+        else res.render("login", {})
+}).post('/', async (req, res, next)=>{
+    try {
+        await client.connect();
+        let data = await client.db('school').collection('student').findOne(req.body)
+        if(data){
+            req.session.user = data._id
+            // res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')node
+            res.render("login-ed")
+        } else {
+            console.log(req.body)
+            res.send("Incorrect username or password")
+        }
+    }finally {
+        await client.close()
+    }
+}).post('/logout', (req, res, next) => {
+    // logout logic
+  req.session.user = null
+  
+//   req.session.save(function (err) {
+//     if (err) next(err)
+
+//     req.session.regenerate(function (err) {
+//       if (err) next(err)
+      res.redirect('/')
+    // })
+//   })
+});
+
+module.exports = router;s found")
+    }finally {
+        await client.close()
+    }
+});
+
+module.exports = router;

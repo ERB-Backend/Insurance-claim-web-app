@@ -1,0 +1,30 @@
+<title>New Claim</title>
+<h2>File new claim </h2>
+<h3>Please enter: </h3>
+<form action="/users/claim" method="post" enctype="multipart/form-data"> 
+    
+    <!--Insurance company: not implemented-->
+    Policy number:              <input type="number" name="policyNumber"><br/><p></p>
+    <!--Name of person insured:     <input type="text" name="nameInsured"><br/><p></p>      not implemented-->
+    Claim amount:               $<input type="number" name="amount"><br/><p></p>
+    Date incurred:              <input type="date" name="incurredDate"><br/><p></p>
+   <!-- Diagnosis:                  <input type="text" name="diag"><br/><p></p>             not implemented-->
+    
+    <h3>Please upload supporting documents (up to 5) such as:</h3> 
+    <h4>- hospital discharge summary</h4> 
+    <h4>- receipts of your treatment</h4> 
+    <h4>- any documents issued by doctor or hospital with diagnosis</h4> 
+     
+        <input type="file" name="documents"/><br/>
+        <input type="file" name="documents"/><br/>
+        <input type="file" name="documents"/><br/>
+        <input type="file" name="documents"/><br/>
+        <input type="file" name="documents"/><br/>
+
+    <br></br>
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+    <!--  <a href="/edit">Edit</a>                                                          not implemented-->
+</form>
+
+    <!--  <a href="https://www.semrush.com/">Semrush</a>                                    not implemented-->

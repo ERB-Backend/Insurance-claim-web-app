@@ -20,7 +20,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   let word = req.session.user.name;
   res.locals.name = word.charAt(0).toUpperCase() + word.slice(1);
   res.locals.isAuthenticated = req.session.user;
-  res.render("forms", {});
+  res.redirect("/users/forms");
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {

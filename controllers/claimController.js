@@ -6,6 +6,61 @@ const User = require("../models/userModel");
 const { ObjectId, Db, BSONType } = require("mongodb");
 const { Model } = require("mongoose");
 
+const multer = require("multer");
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "upload/claim");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `user-${req.session.user.userId}-${Date.now()}.${ext}}`);
+  },
+});
+
+// const multerFilter = (req, file, cb) => {
+// if (file.mimetype.startsWith("image")) {
+//   cb(null, true);
+// } else {
+//   cb(null, false);
+// }
+// };
+
+const upload = multer({
+  storage: multerStorage,
+  // fileFilter: multerFilter,
+});
+
+// -------------Start by Michael-----------------
+// exports.uploadClaimDocs = upload.single("documents");
+exports.uploadClaimDocs = upload.array("documents", 5);
+
+exports.createClaimWithDocs = async (req, res, next) => {
+  if (req.files) {
+    // req.body.documents = req.file.path;
+    const claimNumber =
+      new Date().toISOString().replaceAll("-", "").slice(0, 7) +
+      req.body.policyNumber +
+      new Date().getMinutes().toString();
+    const uploadedFiles = req.files.map((file) => ({ path: file.path }));
+    const claimDetail = {
+      ...req.body,
+      userId: req.session.user._id,
+      documents: uploadedFiles,
+      claimNumber: claimNumber,
+    };
+    await Claim.create(claimDetail);
+    const successMsg =
+      "Claim accepted. Please save Claim number " +
+      claimNumber +
+      " for future reference";
+
+    res.send(successMsg);
+  } else {
+    res.status(500).send("An error occurred while processing");
+  }
+  next();
+};
+
 exports.getAllClaims = async (req, res) => {
   try {
     return await Claim.find();
@@ -25,16 +80,21 @@ exports.getAllClaims = async (req, res) => {
 };
 exports.createClaim = async (req, res) => {
   try {
-    const claimDetail = { ...req.body, userId: req.session.user._id };
+    const claimDetail = {
+      ...req.body,
+      userId: req.session.user._id,
+      // documents: [{ path: req.body.documents }],
+    };
+    console.log(claimDetail);
     await Claim.create(claimDetail);
     res.redirect("/users/dashboard");
   } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
+    req.session.user.errors = err;
+    res.redirect("/users/dashboard");
   }
 };
+
+// End By Michael
 
 //------ steve ------
 //1.01

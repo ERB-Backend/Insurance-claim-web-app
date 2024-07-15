@@ -27,8 +27,10 @@ exports.deleteCustomer = async (req, res) => {
     console.log(error);
   }
 };
+
 // End by Michael
 
+// Start by Daniel
 exports.getAllUsers = async (req, res) => {
   try {
     return await Users.find();
@@ -151,3 +153,5 @@ exports.submitProfileForm = (req, res) => {
 //         res.status(500).send('An error occurred');
 //       });
 //   };
+
+// End by Daniel

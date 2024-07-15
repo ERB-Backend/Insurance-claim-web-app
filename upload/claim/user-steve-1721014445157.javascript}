@@ -1,0 +1,17 @@
+var express = require('express');
+var router = express.Router();
+const path = require('path')
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  // res.render('index', { title: 'Express' });
+  res.sendFile(path.join(__dirname, '../views', '/singleUpload.html'))
+  // res.sendFile();
+
+}).get('/multiple', (req, res,next)=>{
+  res.sendFile(path.join(__dirname, '../views', '/multipleUpload.html'))
+}).get('/different', (req, res,next)=>{
+  res.sendFile(path.join(__dirname, '../views', '/differentUpload.html'))
+});
+
+module.exports = router;

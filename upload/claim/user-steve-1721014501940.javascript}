@@ -1,0 +1,23 @@
+var express = require('express');
+var router = express.Router();
+
+/* GET users listing. */
+router.get('/', function(req, res, next) {
+  res.send(`respond with ${req.query.a}`);
+}).post('/login', function(req, res, next){
+  console.log(req.body.id, req.body.pwd)
+  req.send('Your id is' + req.body.id + 'and you pwd is ' + req.body.pwd)
+}).get('/std1', function(req,res,next){
+  let msg= "";
+  if (req.query.class)msg+='class is' + req.query.class;
+  if (req.query.name)msg+='name is' + req.query.name;
+res.send('response from/std1: ' +msg)
+}).get('/std/:class/:name', function(req, res, next){
+res.send('response from /std:" '+req.params.class+' and ' + req.params.name)
+})
+router.get('/:id', function(req, res, next) {
+  res.send(`respond with ${req.params.id}`);
+});
+
+
+module.exports = router;
