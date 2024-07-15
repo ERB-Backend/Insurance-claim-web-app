@@ -56,7 +56,22 @@ router
 router.route("/forms").get(authController.protect, (req, res, next) => {
   userId = req.session.user.userId;
   userName = req.session.user.name;
-  res.render("forms", { userId: userId, name: userName, errors: null });
+  let error = null;
+  let message = null;
+  if (req.session.user && req.session.user.error) {
+    error = req.session.user.error;
+    delete req.session.user.error;
+  }
+  if (req.session.user && req.session.user.message) {
+    message = req.session.user.message;
+    delete req.session.user.message;
+  }
+  res.render("forms", {
+    userId: userId,
+    name: userName,
+    error: error,
+    message: message,
+  });
   // res.sendFile(path.join(__dirname, "../views", "/claim.html"));
 });
 // .post(claimController.createClaim);

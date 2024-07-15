@@ -35,31 +35,52 @@ const upload = multer({
 exports.uploadClaimDocs = upload.array("documents", 5);
 
 exports.createClaimWithDocs = async (req, res, next) => {
-  if (req.files) {
-    // req.body.documents = req.file.path;
-    const claimNumber =
-      new Date().toISOString().replaceAll("-", "").slice(0, 7) +
-      req.body.policyNumber +
-      new Date().getMinutes().toString();
-    const uploadedFiles = req.files.map((file) => ({ path: file.path }));
-    const claimDetail = {
-      ...req.body,
-      userId: req.session.user._id,
-      documents: uploadedFiles,
-      claimNumber: claimNumber,
-    };
-    await Claim.create(claimDetail);
-    const successMsg =
-      "Claim accepted. Please save Claim number " +
-      claimNumber +
-      " for future reference";
+  try {
+    if (req.files) {
+      // req.body.documents = req.file.path;
+      const claimNumber =
+        new Date().toISOString().replaceAll("-", "").slice(0, 7) +
+        req.body.policyNumber +
+        new Date().getMinutes().toString();
+      const uploadedFiles = req.files.map((file) => ({ path: file.path }));
+      const claimDetail = {
+        ...req.body,
+        userId: req.session.user._id,
+        documents: uploadedFiles,
+        claimNumber: claimNumber,
+      };
+      await Claim.create(claimDetail);
+      const successMsg =
+        "Claim accepted. Please save Claim number " +
+        claimNumber +
+        " for future reference";
 
-    res.send(successMsg);
-  } else {
-    res.status(500).send("An error occurred while processing");
+      req.session.user.message = successMsg;
+      res.redirect("/users/forms");
+    }
+    next();
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      // Handle validation errors
+      handleValidationError(err, req);
+    } else {
+      // Handle other types of errors
+      console.error("Error creating claim:", err);
+      req.session.user.error = "An unexpected error occurred";
+    }
+    res.redirect("/users/forms");
   }
-  next();
 };
+function handleValidationError(err, req) {
+  // Extract error messages
+  const errorMessages = Object.values(err.errors).map((error) => error.message);
+
+  // Join all error messages into a single string
+  const errorMessage = errorMessages.join(". ");
+
+  // Store the error message in the session
+  req.session.user.error = errorMessage;
+}
 
 exports.getAllClaims = async (req, res) => {
   try {
@@ -79,31 +100,31 @@ exports.getAllClaims = async (req, res) => {
   }
 };
 
-exports.createClaim = async (req, res) => {
-  try {
-    const claimDetail = {
-      ...req.body,
-      userId: req.session.user._id,
-      // documents: [{ path: req.body.documents }],
-    };
-    console.log(claimDetail);
-    await Claim.create(claimDetail);
-    res.redirect("/users/dashboard");
-  } catch (err) {
-    req.session.user.errors = err;
-    res.redirect("/users/dashboard");
-  }
-};
+// exports.createClaim = async (req, res) => {
+//   try {
+//     const claimDetail = {
+//       ...req.body,
+//       userId: req.session.user._id,
+//       // documents: [{ path: req.body.documents }],
+//     };
+//     console.log(claimDetail);
+//     await Claim.create(claimDetail);
+//     res.redirect("/users/dashboard");
+//   } catch (error) {
+//     res.status(400).json({
+//       status: "fail",
+//       message: err.message,
+//     });
+//   }
+// };
 
 exports.getUserClaims = async (req, res) => {
   try {
     const userId = req.session.user._id;
     return await Claim.find({ userId: userId }).sort({ createdAt: -1 });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    req.session.user.error = err.message;
+    res.redirect("users/forms");
   }
 };
 
