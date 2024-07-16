@@ -1,9 +1,10 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 const claimSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: ObjectId,
       required: [false, "You must include the userId"],
       trim: true,
     },

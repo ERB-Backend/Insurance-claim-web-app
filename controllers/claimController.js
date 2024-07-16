@@ -36,24 +36,42 @@ exports.createClaim = async (req, res) => {
 };
 
 //------ steve ------
-//1.01
+//1.0
 exports.allClaims = async (req, res) => {
   //testQuery();
   //testOnView();
-
-  console.log("req.queryParams : ", req.queryParams);
-
+  //console.log("req.queryParams : ", req.queryParams);
   try {
-    console.log("req.query.sortByCreatedAt : ", req.query.sortByCreatedAt);
-    //return (req.query.hasOwnProperty('sortByCompanyName')) ? await Claim.find({}).sort({ companyName: Number(req.query.sortByCompanyName) }) : await Claim.find();
-    //return (req.query.hasOwnProperty('sortByPolicyNumber')) ? await Claim.find({}).sort({ policyNumber: Number(req.query.sortByPolicyNumber) }) : await Claim.find();
-    //return (req.query.hasOwnProperty('sortByAmount')) ? await Claim.find({}).sort({ amount: Number(req.query.sortByAmount) }) : await Claim.find();
-    //return (req.query.hasOwnProperty('sortByStatus')) ? await Claim.find({}).sort({ status: Number(req.query.sortByStatus) }) : await Claim.find();
+    const sortOrder = {};
+    if (req.query.hasOwnProperty("sortByCreatedAt")) {
+      sortOrder.createdAt = Number(req.query.sortByCreatedAt);
+    }
+    if (req.query.hasOwnProperty("sortByPolicyNumber")) {
+      sortOrder.policyNumber = Number(req.query.sortByPolicyNumber);
+    }
+    if (req.query.hasOwnProperty("sortByAmount")) {
+      sortOrder.amount = Number(req.query.sortByAmount);
+    }
+    if (req.query.hasOwnProperty("sortByStatus")) {
+      sortOrder.status = Number(req.query.sortByStatus);
+    }
 
-    let sortOrder = req.query.hasOwnProperty("sortByCreatedAt")
-      ? Number(req.query.sortByCreatedAt)
-      : -1;
-    return await Claim.find({}).sort({ createdAt: sortOrder });
+    const claims = await Claim.find({}).sort(sortOrder);
+    const users = await User.find({});
+    console.log('users[0].name :', users[0].name);
+    //users.forEach(x => console.log(x.name));
+    console.log('****** user _id ******');
+    users.forEach(x => console.log(x._id, typeof (x._id)));
+    const mappedClaims = claims.map((claim) => {
+      //console.log('claim.userId : ', claim.userId);
+      const user = users.filter(x => x._id.equals(claim.userId));
+      console.log('user : ', user);
+      // console.log('user.name : ', user[0].name);
+      const n = (user.length > 0) ? user[0].name : 'undefined';
+      return Object.assign(claim, { userName: n });
+    }
+    );
+    return mappedClaims;//claims;
   } catch (err) {
     res.status(404).json({
       status: "fail",
@@ -62,32 +80,78 @@ exports.allClaims = async (req, res) => {
   } finally {
   }
 };
+//1.1.1
+exports.claimByObjectId = async (req, res) => {
+  try {
+    const { objectId } = req.query.objectId;//668f60a271be094fd33af9f3
+    const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
+    console.log("typeOf search_objectId : ", typeof search_objectId);
+    return await Claim.findOne({ _id: search_objectId });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+//1.1.2
+exports.claimByObjectIdUpdateStatus = async (req, res) => {
+  try {
+    const { objectId } = req.query;
+    const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
+    console.log("typeOf search_objectId : ", typeof search_objectId);
+    return await Claim.updateOne(
+      { _id: search_objectId },
+      { status: req.query.status },
+      { $set: { isActive: true } }
+    );
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+//1.2.1
 exports.claimsByUserId = async (req, res) => {
   try {
-    let sortOrder = req.query.hasOwnProperty("sortByCreatedAt")
-      ? Number(req.query.sortByCreatedAt)
-      : -1;
-    const claims = await Claim.find(
-      { userId: req.query.userId },
-      {
-        _id: 1,
-        userId: 1,
-        companyName: 1,
-        policyNumber: 1,
-        amount: 1,
-        status: 1,
-        createdAt: 1,
-        updatedAt: 1,
-      }
-    ).sort({ createdAt: sortOrder });
-    console.log("claims.length : ", claims.length);
+    const sortOrder = {};
+    if (req.query.hasOwnProperty("sortByCreatedAt")) {
+      sortOrder.createdAt = Number(req.query.sortByCreatedAt);
+    }
+    if (req.query.hasOwnProperty("sortByPolicyNumber")) {
+      sortOrder.policyNumber = Number(req.query.sortByPolicyNumber);
+    }
+    if (req.query.hasOwnProperty("sortByAmount")) {
+      sortOrder.amount = Number(req.query.sortByAmount);
+    }
+    if (req.query.hasOwnProperty("sortByStatus")) {
+      sortOrder.status = Number(req.query.sortByStatus);
+    }
+    //console.log('req.session.user.userId : ', req.session.user.userId);//steve
+    //console.log('req.session.user._id : ', req.session.user._id);//6688058db58ce72799586539
+    //console.log('typeOf req.session.user._id : ', typeof (req.session.user._id));//string
+    const userObjectId = new ObjectId(req.session.user._id);
+    //console.log('typeOf userObjectId : ', typeof (userObjectId));//object
+    const claims = await Claim.find({ "userId": userObjectId }, {
+      _id: 1,
+      userId: 1,
+      policyNumber: 1,
+      amount: 1,
+      status: 1,
+      messages: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    }).sort(sortOrder);
 
+    console.log("claims.length : ", claims.length);
     if (claims.length > 0) {
-      console.log("claims[0] : ", claims[0]);
-      const user = await User.findOne({ userId: claims[0].userId });
+      //console.log("claims[0] : ", claims[0]);
+      const user = await User.findOne({ _id: userObjectId });
+
       console.log(
         "userId : ",
-        claims[0].userId,
+        userObjectId,
         "have user.name : ",
         user.name
       );
@@ -108,25 +172,17 @@ exports.claimsByUserId = async (req, res) => {
     });
   }
 };
-exports.claimByObjectId = async (req, res) => {
-  try {
-    const { objectId } = req.query;
-    const search_objectId = new mongoose.Types.ObjectId(objectId);
-    console.log("typeOf search_objectId : ", typeof search_objectId);
-    return await Claim.findOne({ _id: search_objectId });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
+//1.3.1
 exports.claimsByPolicyNumber = async (req, res) => {
   console.log(" req.query.policyNumber : ", req.query.policyNumber);
   console.log(" req.query.sortByPolicyNumber : ", req.query.sortByPolicyNumber);
   // const { policyNumber } = req.query;
   // console.log(' policyNumber : ', policyNumber);
   try {
+    const sortOrder = {};
+    if (req.query.hasOwnProperty("sortByCreatedAt")) {
+      sortOrder.createdAt = Number(req.query.sortByCreatedAt);
+    }
     return await Claim.find(
       { policyNumber: req.query.policyNumber },
       {
@@ -135,65 +191,11 @@ exports.claimsByPolicyNumber = async (req, res) => {
         policyNumber: 1,
         amount: 1,
         status: 1,
+        messages: 1,
         createdAt: 1,
         updatedAt: 1,
       }
-    ).sort({ policyNumber: Number(req.query.sortByPolicyNumber) });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
-exports.claimByObjectIdUpdate = async (req, res) => {
-  try {
-    const { objectId } = req.query;
-    const search_objectId = new mongoose.Types.ObjectId(objectId);
-    console.log("typeOf search_objectId : ", typeof search_objectId);
-    return await Claim.findOneAndReplace(
-      { _id: search_objectId },
-      {
-        companyName: req.query.companyName,
-        policyNumber: req.query.policyNumber,
-        userId: req.query.userId,
-        amount: req.query.amount,
-        status: req.query.status,
-      },
-      { returnOriginal: false }
-    ); //{ new: true }
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
-exports.claimsByPolicyNumberUpdate = async (req, res) => {
-  console.log(" req.query : ", req.query); // req.query :  { name: 'steve', 'email:abc@gmail.com': '' }
-
-  //console.log(' policyNumber : ', policyNumber);
-  try {
-    //const { userId, email } = req.query;//params
-    const { userId } = req.query; //params
-    console.log("userId : ", userId);
-    //console.log('email : ', email);
-    //console.log('{} : ', { name: name, email: email });
-    console.log("{} : ", { userId: userId });
-
-    // return await Claim.findOneAndReplace({ policyNumber: req.query.policyNumber }, { policyNumber: req.query.newPolicyNumber, userId: 'steve', amount: '9889', status: 'approved' }, { returnOriginal: false });
-
-    return await Claim.findOneAndReplace(
-      { policyNumber: req.query.policyNumber },
-      {
-        companyName: req.query.companyName,
-        policyNumber: req.query.newPolicyNumber,
-        userId: req.query.userId,
-        amount: req.query.amount,
-        status: req.query.status,
-      },
-      { returnOriginal: false }
-    ); //{ new: true }
+    ).sort(sortOrder);
   } catch (err) {
     res.status(404).json({
       status: "fail",
@@ -202,51 +204,13 @@ exports.claimsByPolicyNumberUpdate = async (req, res) => {
   }
 };
 
-exports.claimInsert = async (req, res) => {
-  console.log(" req.query : ", req.query); // req.query :  { name: 'steve', 'email:abc@gmail.com': '' }
 
-  //console.log(' policyNumber : ', policyNumber);
-  try {
-    //  await Claim.insertOne({ userId: "steve", policyNumber : "400", amount: 7777, status : 'submitted' });
 
-    // Claim.insertMany([
-    //   { userId: 'steve', policyNumber: 401, amount: 123 }
-    // ])
-    return Claim.insertMany([
-      {
-        userId: req.query.userId,
-        companyName: req.query.companyName,
-        policyNumber: req.query.policyNumber,
-        amount: req.query.amount,
-        status: req.query.status,
-      },
-    ]);
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
-exports.claimByObjectIdDelete = async (req, res) => {
-  try {
-    const { objectId } = req.query;
-    const search_objectId = new mongoose.Types.ObjectId(objectId);
-    console.log("typeOf search_objectId : ", typeof search_objectId);
-    return await Claim.findOneAndDelete(
-      { _id: search_objectId },
-      { returnOriginal: false }
-    ); //{ new: true }
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
+
+//2.0
 exports.allUsers = async (req, res) => {
   try {
-    console.log("req.query.sortByUserId : ", req.query.sortByUserId);
+    //console.log("req.query.sortByUserId : ", req.query.sortByUserId);
     let sortOrder = req.query.hasOwnProperty("sortByUserId")
       ? Number(req.query.sortByUserId)
       : 1;
@@ -259,6 +223,7 @@ exports.allUsers = async (req, res) => {
   } finally {
   }
 };
+//2.1.1
 exports.userByUserId = async (req, res) => {
   console.log(" req.query.userId : ", req.query.userId);
   // const { policyNumber } = req.query;
@@ -298,7 +263,8 @@ exports.userByUserId = async (req, res) => {
     });
   }
 };
-exports.userByUserIdUpdate = async (req, res) => {
+//2.1.2
+exports.userByUserIdUpdateName = async (req, res) => {
   console.log(" req.query.userId : ", req.query.userId);
   // const { policyNumber } = req.query;
   // console.log(' policyNumber : ', policyNumber);
@@ -329,6 +295,7 @@ exports.userByUserIdUpdate = async (req, res) => {
     });
   }
 };
+//--------- Methods -----------------
 function encodeQueryValue(value) {
   return encodeURIComponent(value);
 }
@@ -489,19 +456,6 @@ function testOnView() {
           required: ["name"],
           properties: {
             BSONType: "string",
-<<<<<<< HEAD
-            description: "must be a string and is required"
-          },//END properties
-        }//END joinSchema
-      }//END validator
-    }//END 
-  );//END createView
-
-  db.user_claims.find({ userId: steve });
-
-
-};
-=======
             description: "must be a string and is required",
           }, //END properties
         }, //END joinSchema
@@ -510,5 +464,5 @@ function testOnView() {
   ); //END createView
 
   db.user_claims.find({ userId: steve });
-}
->>>>>>> eedb860a67c7ccc6462fc5eb3ffcccb9db81ad80
+};
+
