@@ -113,7 +113,6 @@ router.route("/claimsByUserId").get(async (req, res, next) => {
       if (returnJson) {
         res.json(claims);
       } else {
-
         res.render("test", { claims: claims });
       }
     } else {
@@ -140,7 +139,6 @@ router.route("/claimsByPolicyNumber").get(async (req, res, next) => {
   } finally {
   }
 });
-
 
 //2.0
 router.route("/allUsers").get(async (req, res, next) => {
