@@ -101,40 +101,8 @@ router.route("/deleteAccount").post(userController.deleteCustomer);
 //   Michael end
 
 //------ steve start ------
-router.route("/allClaims").get(async (req, res, next) => {
-  try {
-    const claims = await claimController.allClaims(req, res);
-    if (claims) {
-      let returnJson = req.query.hasOwnProperty("returnJson")
-        ? Boolean(Number(req.query.returnJson))
-        : false;
-      if (returnJson) {
-        res.json(claims);
-      } else {
-        res.render("test", { claims: claims });
-      }
-    } else {
-      res.send("Fail");
-    }
-  } finally {
-  }
-});
-router.route("/sort").get(async (req, res, next) => {
-  try {
-    const claims = await claimController.allClaims(req, res);
-    if (claims) {
-      // let returnJson = (req.query.hasOwnProperty('returnJson')) ? Boolean(Number(req.query.returnJson)) : false;
-      // if (returnJson) {
-      //   res.json(claims);
-      // } else {
-      //   res.render("test", { claims: claims });
-      // }
-    } else {
-      res.send("Fail");
-    }
-  } finally {
-  }
-});
+
+//1.2.1
 router.route("/claimsByUserId").get(async (req, res, next) => {
   try {
     const claims = await claimController.claimsByUserId(req, res);
@@ -145,32 +113,17 @@ router.route("/claimsByUserId").get(async (req, res, next) => {
       if (returnJson) {
         res.json(claims);
       } else {
-        //res.json(claims);//temp
+
         res.render("test", { claims: claims });
       }
     } else {
-      res.send("not claims found by userId : " + req.query.userId);
+      res.send("no claims found");
     }
   } finally {
   }
 });
 
-router.route("/claimByObjectId").get(async (req, res, next) => {
-  try {
-    console.log("claimByObjectId  req.query : ", req.query);
-    const { objectId } = req.query;
-    console.log("objectId : ", objectId);
-    const claim = await claimController.claimByObjectId(req, res);
-    console.log("claim : ", claim);
-    if (claim) {
-      res.json(claim);
-    } else {
-      res.send("objectId : " + req.query.objectId + "  not found");
-    }
-  } finally {
-  }
-});
-
+//1.3.1
 router.route("/claimsByPolicyNumber").get(async (req, res, next) => {
   try {
     //console.log('claimsByPolicyNumber  req.query : ', req.query);// { policyNumber: '9405826' }
@@ -180,8 +133,6 @@ router.route("/claimsByPolicyNumber").get(async (req, res, next) => {
     console.log("claim : ", claim);
 
     if (claim) {
-      //console.log('_id : ', claim._id);
-      //res.send('policyNumber : ' + req.query.policyNumber + ' found');
       res.json(claim);
     } else {
       res.send("policyNumber : " + req.query.policyNumber + "  not found");
@@ -189,118 +140,38 @@ router.route("/claimsByPolicyNumber").get(async (req, res, next) => {
   } finally {
   }
 });
-router.route("/claimByObjectIdUpdate").get(async (req, res, next) => {
-  try {
-    const claim = await claimController.claimByObjectIdUpdate(req, res);
-    console.log("claim : ", claim);
 
-    if (claim) {
-      //console.log('_id : ', claim._id);
-      //res.send('policyNumber : ' + req.query.policyNumber + ' found');
-      res.json(claim);
-    } else {
-      res.send("objectId : " + req.query.objectId + "  not found");
-    }
-  } finally {
-  }
-});
-router.route("/claimsByPolicyNumberUpdate").get(async (req, res, next) => {
-  try {
-    const claim = await claimController.claimsByPolicyNumberUpdate(req, res);
-    console.log("claim : ", claim);
 
-    if (claim) {
-      //console.log('_id : ', claim._id);
-      //res.send('policyNumber : ' + req.query.policyNumber + ' found');
-
-      res.json(claim);
-    } else {
-      res.send("policyNumber : " + req.query.policyNumber + "  not found");
-    }
-  } finally {
-  }
-});
-router.route("/claimInsert").get(async (req, res, next) => {
-  try {
-    const claim = await claimController.claimInsert(req, res);
-    console.log("claim : ", claim);
-
-    if (claim) {
-      //console.log('_id : ', claim._id);
-      //res.send('policyNumber : ' + req.query.policyNumber + ' found');
-      res.json(claim);
-    } else {
-      res.send("insert fail");
-    }
-  } finally {
-  }
-});
-router.route("/claimByObjectIdDelete").get(async (req, res, next) => {
-  try {
-    const claim = await claimController.claimByObjectIdDelete(req, res);
-    console.log("claim : ", claim);
-
-    if (claim) {
-      //console.log('_id : ', claim._id);
-      //res.send('policyNumber : ' + req.query.policyNumber + ' found');
-      res.json(claim);
-    } else {
-      res.send("objectId : " + req.query.objectId + "  not found");
-    }
-  } finally {
-  }
-});
+//2.0
 router.route("/allUsers").get(async (req, res, next) => {
   try {
     const users = await claimController.allUsers(req, res);
     if (users) {
-      let returnJson = req.query.hasOwnProperty("returnJson")
-        ? Boolean(Number(req.query.returnJson))
-        : false;
-      if (returnJson) {
-        res.json(users);
-      } else {
-        res.json(users); //TEMP
-        //res.render("test", { users: users });
-      }
+      res.json(users);
     } else {
       res.send("Fail");
     }
   } finally {
   }
 });
+//2.1.1
 router.route("/userByUserId").get(async (req, res, next) => {
   try {
     const user = await claimController.userByUserId(req, res);
     if (user) {
-      let returnJson = req.query.hasOwnProperty("returnJson")
-        ? Boolean(Number(req.query.returnJson))
-        : false;
-      if (returnJson) {
-        res.json(user);
-      } else {
-        res.json(user); //TEMP
-        //res.render("test", { user: user });
-      }
+      res.json(user);
     } else {
       res.send("userId : " + req.query.userId + "  not found");
     }
   } finally {
   }
 });
-router.route("/userByUserIdUpdate").get(async (req, res, next) => {
+//2.1.2
+router.route("/userByUserIdUpdateName").get(async (req, res, next) => {
   try {
-    const user = await claimController.userByUserIdUpdate(req, res);
+    const user = await claimController.userByUserIdUpdateName(req, res);
     if (user) {
-      let returnJson = req.query.hasOwnProperty("returnJson")
-        ? Boolean(Number(req.query.returnJson))
-        : false;
-      if (returnJson) {
-        res.json(user);
-      } else {
-        res.json(user); //TEMP
-        //res.render("test", { user: user });
-      }
+      res.json(user);
     } else {
       res.send("userId : " + req.query.userId + "  not found");
     }
