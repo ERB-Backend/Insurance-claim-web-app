@@ -38,6 +38,7 @@ Output:
   },
  …..
 ]
+
 1.1.1 claimByObjectId
 Method : Get
 Parameter 
@@ -71,6 +72,7 @@ Output:
   "updatedAt": "2024-07-15T03:38:33.275Z",
   "__v": 0
 }
+
 1.1.2 claimByObjectIdUpdateStatus
 URL example :
 http://127.0.0.1:1234/admin/claimByObjectIdUpdateStatus?objectId=66952686f29eaf41416d61da&status=approved
