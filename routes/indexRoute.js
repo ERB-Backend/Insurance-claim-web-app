@@ -6,7 +6,8 @@ var router = express.Router();
 /* GET home page. */
 
 router.get("/", function (req, res, next) {
-  res.render("login", {});
+  if (req.session.user) res.redirect("/users/forms");
+  else res.render("login", { error: null });
 });
 router.get("/admin", function (req, res, next) {
   res.render("index", {});
@@ -22,8 +23,8 @@ router.get("/register", function (req, res, next) {
 router
   .route("/login")
   .get((req, res, next) => {
-    if (req.session.user) res.render("forms", {});
-    else res.render("login", {});
+    if (req.session.user) res.redirect("/users/forms");
+    else res.render("login", { error: null });
   })
   .post(authController.login);
 

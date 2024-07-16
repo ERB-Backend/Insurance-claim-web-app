@@ -1,22 +1,74 @@
 const Users = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 
+// Start by Michael
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   const userId = req.session.user._id;
   console.log(userId);
   const { name, currentPassword, password, passwordConfirm } = req.body;
+
+  // Find the user
   const user = await Users.findById(userId).select("+password");
-  if (!(await user.correctPassword(currentPassword, user.password))) {
-    return res.status(400).json({ message: "Your current password is wrong" });
+
+  if (!user) {
+    req.session.user.error = "User not found";
+    return res.redirect("/");
   }
-  user.name = name;
-  user.password = password;
-  user.passwordConfirm = passwordConfirm;
-  await user.save();
-  req.session.user = user;
+
+  // Check if password fields are provided
+  const isChangingPassword = password && passwordConfirm;
+
+  // If changing password, verify current password
+  if (isChangingPassword) {
+    if (!currentPassword) {
+      req.session.user.error =
+        "Current password is required to change password";
+      return res.redirect("/users");
+    }
+
+    if (!(await user.correctPassword(currentPassword, user.password))) {
+      req.session.user.error = "Your current password is wrong";
+      return res.redirect("/users");
+    }
+
+    // Update password
+    user.password = password;
+    user.passwordConfirm = passwordConfirm;
+  }
+
+  // Update name if provided
+  if (name && name !== user.name) {
+    user.name = name;
+  }
+
+  // Only save if there are changes
+  if (isChangingPassword || (name && name !== user.name)) {
+    await user.save();
+    req.session.user = user;
+    req.session.user.message = "Profile updated successfully";
+  } else {
+    req.session.user.error = "No changes were made";
+  }
+
+  console.log("🔥🔥🔥🔥🔥🔥", req.session.user);
+
   res.redirect("/users");
 });
 
+exports.deleteCustomer = async (req, res) => {
+  try {
+    const userId = req.session.user.userId;
+    await Users.deleteOne({ userId: userId });
+    req.session.user = null;
+    res.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// End by Michael
+
+// Start by Daniel
 exports.getAllUsers = async (req, res) => {
   try {
     return await Users.find();
@@ -139,3 +191,5 @@ exports.submitProfileForm = (req, res) => {
 //         res.status(500).send('An error occurred');
 //       });
 //   };
+
+// End by Daniel

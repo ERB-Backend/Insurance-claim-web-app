@@ -79,10 +79,14 @@
 
       <%- include('partials/navbar.ejs')%>
       <div class="clearfix"></div>
-
       <div class="content-wrapper">
         <div class="container-fluid">
           <div class="row mt-3">
+            <% if (message) { %>
+              <h3 style="color: orange;">  <%= message %></h3>
+              </div>
+              <% delete message; %> <!-- Clear the error after displaying -->
+            <% } %>
             <div class="col-lg-6">
               <div class="card">
                 <div class="card-body">
@@ -91,11 +95,11 @@
                 <div class="card-body">
                   <div class="card-title">Submit Claim Form</div>
                   <hr />
-                  <form method="post" action="/users/forms">
+                  <form method="post" action="/users/claim"  enctype="multipart/form-data">
                     <div class="form-group">
                       <label for="policyNumber">Policy Number</label>
                       <input
-                        type="text"
+                        type="number"
                         class="form-control form-control-rounded"
                         name="policyNumber"
                         id="policyNumber"
@@ -105,17 +109,36 @@
                     <div class="form-group">
                       <label for="amount">Claim Amount</label>
                       <input
-                        type="text"
+                        type="number"
                         class="form-control form-control-rounded"
                         name="amount"
                         id="amount"
                         placeholder="Enter Claim Amount"
                       />
-                    </div>
+                    </div>    
                     <div class="form-group">
-                      <label for="document">Supporting Document</label>
-                   <input class="form-control-rounded" type="file" name="document" id="document">
+                      <label for="amount">Date Incurred</label>
+                      <input type="date" class="form-control form-control-rounded" name="incurredDate"
+                        id="dateIncurred" placeholder="Enter Incurred Date" />
+                        <% if (error) { %>
+                          <div class="error-message" style="color: red;">
+                            <%= error %>
+                          </div>
+                          <% delete error; %> <!-- Clear the error after displaying -->
+                        <% } %>
                     </div>
+                    <div class="form-group">                        
+                      <label for="documents">Supporting Document (Up to 5):</label><br>
+                      <input class="form-control-rounded" type="file" name="documents" id="documents"><br>
+                      <input class="form-control-rounded" type="file" name="documents" id="documents"><br>
+                      <input class="form-control-rounded" type="file" name="documents" id="documents"> <br>
+                      <input class="form-control-rounded" type="file" name="documents" id="documents"> <br>
+                      <input class="form-control-rounded" type="file" name="documents" id="documents"> <br>
+                      <!-- <p>Please upload supporting documents (up to 5) such as:</p>
+                      <p>- hospital discharge summary</p>
+                      <p>- receipts of your treatment</p>
+                      <p>- any documents issued by doctor or hospital with diagnosis</p> -->
+                  </div>
                     <!-- <div class="form-group">
                       <label for="input-9">Password</label>
                       <input
@@ -136,7 +159,7 @@
                     </div> -->
                     <div class="form-group py-2">
                       <div class="icheck-material-white">
-                        <input type="checkbox" id="user-checkbox2"  />
+                        <input type="checkbox" id="user-checkbox2" required />
                         <label for="user-checkbox2"
                           >I Agree Terms & Conditions</label
                         >
@@ -150,13 +173,22 @@
                         <i class="icon-lock"></i> Submit
                       </button>
                     </div>
+                    <div class="form-group">
+                      <button
+                      type="reset"
+                      class="btn btn-light btn-round px-5"
+                    >
+                      <i class=""></i> Reset
+                    </button>
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
+           
           </div>
           <!--End Row-->
-
+          
           <!--start overlay-->
           <div class="overlay toggle-menu"></div>
           <!--end overlay-->

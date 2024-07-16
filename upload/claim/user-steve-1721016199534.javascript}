@@ -1,0 +1,85 @@
+var express = require('express');
+var router = express.Router();
+
+/* GET users listing. */
+
+router.get('/', function(req, res, next) {
+  res.send('This is student module');
+});
+
+module.exports = router;
+godb').MongoClient;
+const client = new MongoClient("mongodb://localhost:27017/");
+router.get('/create', async (req, res, next) => {
+    try {
+        await client.connect();
+        const db = client.db("school");  // use school
+        const kln = db.collection("student");
+        await kln.insertMany([
+            {Name:"Eddie",Height:147,Weight:40,Age:18, Password: "test1234"},
+            {Name:"Chris",Height:150,Weight:40,Age:14, Password: "test1234"},
+            {Name:"Flora",Height:151,Weight:38,Age:12,Password: "test1234"},
+            {Name:"Annie",Height:144,Weight:35,Age:15,Password: "test1234"},
+            {Name:"Angela",Height:144,Weight:40,Age:14,Password: "test1234"},
+            {Name:"Christy",Height:147,Weight:55,Age:18,Password: "test1234"},
+            {Name:"Danny",Height:144,Weight:43,Age:16,Password: "test1234"}
+        ]);
+        res.send("Done");
+    } finally {
+        await client.close();
+    }
+}).get('/search', async(req, res, next)=>{
+    try{
+        res.render("search", {})
+    } catch(err){
+        console.log(err)
+    }
+}).post('/research', async(req, res, next)=>{
+    try{
+        const search = req.body.search
+        // console.log(typeof search)
+        await client.connect();
+        const kln = client.db("school").collection("student")
+        let data = await kln.find({$and:[{Name:{$regex:search}}]}).toArray()
+        res.render("result", {result: data})
+    }finally {
+        await client.close()
+    }
+}).get('/update1', async(req, res, next)=>{
+    try{
+        await client.connect();
+        const kln = client.db("school").collection("student")
+        let data = await kln.updateMany({Name:"Christy Wong"}, {$set:{Name:"Christy"}})
+        console.log(data.matchedCount)
+        res.send(`Done with ${data.matchedCount} record`)
+    }finally {
+        await client.close()
+    }
+}).get('/update2', async(req, res, next)=>{
+    try{
+        await client.connect();
+        const kln = client.db("school").collection("student")
+        let data = await kln.findOne({Name:"Christy"})
+            data.ABC ="ABC"
+            data.Name ="Christy with ABC"
+            delete data.Age;
+         const result= await kln.replaceOne({_id:data._id}, data)
+       for (const property in result){
+        console.log(`${property}: ${result[property]}`)    
+    }
+    res.send('Done')
+}finally {
+        await client.close()
+    }
+}).get('/search2', async(req, res, next)=>{
+    try{
+        await client.connect();
+        const kln = client.db("school").collection("student")
+       const result = await kln.findOne({ _id: new ObjectId("66723cffb9e20da9b24cc90e") });
+       console.log('Search result:', result);
+    res.send('Done')
+}finally {
+        await client.close()
+    }
+})
+module.exports = router;

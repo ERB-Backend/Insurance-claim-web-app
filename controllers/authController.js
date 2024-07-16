@@ -10,16 +10,18 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { userId, password } = req.body;
   const user = await User.findOne({ userId }).select("+password");
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return res
-      .status(401)
-      .json({ status: "fail", message: "Incorrect username or password" });
-    // return res.render("/login", { error: "Invalid Username or Password" });
+    // return res
+    // .status(401)
+    // .json({ status: "fail", message: "Incorrect username or password" });
+    let error = "Invalid Username or Password";
+    return res.render("login", { error: error });
   }
   req.session.user = user;
   res.locals.userId = req.session.user.userId;
-  res.locals.name = req.session.user.name;
-  res.locals.isAuthenticated = !!req.session.user;
-  res.render("forms", {});
+  let word = req.session.user.name;
+  res.locals.name = word.charAt(0).toUpperCase() + word.slice(1);
+  res.locals.isAuthenticated = req.session.user;
+  res.redirect("/users/forms");
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -27,20 +29,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
     console.log(req.session.user);
     next();
   } else {
-    res.status(401).json({ message: "Unauthorized: Please log in" });
+    return res.render("login", { error: "Unauthorized: Please log in" });
   }
 });
 
 exports.logout = (req, res, next) => {
   // logout logic
   req.session.user = null;
-
-  //   req.session.save(function (err) {
-  //     if (err) next(err)
-
-  //     req.session.regenerate(function (err) {
-  //       if (err) next(err)
   res.redirect("/");
-  // })
-  //   })
 };
