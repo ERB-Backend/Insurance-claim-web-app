@@ -70,7 +70,7 @@ app.use(function (err, req, res, next) {
     // Store the error message in the session
     if (!req.session.user) {
       let error = errorMessage;
-      return res.render("login", { error: error });
+      return res.render("register", { error: error });
     } else {
       req.session.user.error = errorMessage;
     }

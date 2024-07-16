@@ -57,16 +57,8 @@ router.route("/").get(authController.protect, async function (req, res, next) {
 
 router
   .route("/dashboard")
-  .get(authController.protect, async (req, res, next) => {
-    const claims = await claimController.getUserClaims(req, res);
-    console.log(claims);
-    res.render("test", { claims: claims });
-  })
-  .post(authController.protect, async (req, res, next) => {
-    const claims = await claimController.sortUserClaims(req, res);
-    res.render("test", { claims: claims });
-    // console.log(req.body.amount);
-  });
+  .get(authController.protect, claimController.getUserClaims)
+  .post(authController.protect, claimController.sortUserClaims);
 
 router.route("/forms").get(authController.protect, (req, res, next) => {
   userId = req.session.user.userId;
@@ -99,7 +91,7 @@ router
   .route("/signup")
   .get((req, res, next) => {
     if (req.session.user) res.render("forms", {});
-    else res.render("register", {});
+    else res.render("register", { error: null });
   })
   .post(authController.signup);
 

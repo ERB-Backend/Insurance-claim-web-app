@@ -17,7 +17,7 @@ router.get("/admin", function (req, res, next) {
 //   res.render('login', {});
 // });
 router.get("/register", function (req, res, next) {
-  res.render("register", {});
+  res.render("register", { error: null });
 });
 
 router

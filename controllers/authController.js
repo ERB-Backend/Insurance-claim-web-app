@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 
 exports.signup = asyncHandler(async (req, res, next) => {
   await User.create(req.body);
-  res.redirect("/login");
+  res.redirect("/login", { error: null });
 });
 
 exports.login = asyncHandler(async (req, res, next) => {

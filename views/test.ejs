@@ -78,8 +78,8 @@
     <div class="content-wrapper">
       <div class="container-fluid">
         <!--Start Dashboard Content-->
-        <% const totalSum=claims.reduce((a,b)=> a + b.amount,0) %>
-          <% const totalCount=claims.length %>
+        <% const totalSum=allClaims.reduce((a,b)=> a + b.amount,0) %>
+          <% const totalCount=allClaims.length %>
             <div class="card mt-3">
               <div class="card-content ">
                 <div class="row row-group m-0 ">
@@ -102,7 +102,7 @@
                   </div>
                   <div class="col-12 col-lg-6 col-xl-3 border-light">
                     <div class="card-body">
-                      <% const approvedSum=claims.reduce((a,b)=>{
+                      <% const approvedSum=allClaims.reduce((a,b)=>{
                         if (b.status == 'approved'){
                         return a + b.amount;
                         }
@@ -116,7 +116,7 @@
                         <div class="progress my-3" style="height: 3px">
                           <div class="progress-bar" style="width: 55%"></div>
                         </div>
-                        <% const approvedCount=claims.reduce((a,b)=>{
+                        <% const approvedCount=allClaims.reduce((a,b)=>{
                           if (b.status == 'approved'){
                           return a + 1;
                           }
@@ -172,15 +172,28 @@
                           <tr>
                             <!--   <th><button type="sumbit"  id="companyName" name="field" value="companyName" >Company Name</button></th>  -->
                             <th><button                                  
-                                type="submit" id="policyNumber" name="field" value="policyNumber"> Policy
-                                  Number</button></th>
+                                type="submit" id="policyNumber" name="field" value="policyNumber" > Policy
+                                  Number</button>
+                                    <%= typeof sortOrders === 'undefined'|| sortOrders.policyNumberSort === 1 ? '▲' : '▼' %>
+                                
+                                </th>
                             <th><button                                  
-                                type="submit" id="amount" name="field" value="amount">Claim Amount</button>
+                                type="submit" id="amount" name="field" value="amount" >Claim Amount</button>
+                                
+                                  <%= typeof sortOrders === 'undefined'||  sortOrders.amountSort === 1 ? '▲' : '▼' %>
+                                
                             </th>
                             <th><button                                  
-                                type="submit" id="createdAt" name="field" value="createdAt">Date</button></th>
+                                type="submit" id="createdAt" name="field" value="createdAt" >Date</button>
+                                
+                                  <%= typeof sortOrders === 'undefined'|| sortOrders.createdAtSort === 1 ? '▲' : '▼' %>
+                                
+                              </th>
                             <th><button                                                           
-                                type="submit" id="status" name="field" value="status">Status</button>
+                                type="submit" id="status" name="field" value="status" >Status</button>
+                                
+                                  <%= typeof sortOrders === 'undefined'|| sortOrders.statusSort === 1 ? '▲' : '▼' %>
+            
                             </th>
                             <!--  <th>Status</th>   -->
                           </tr>
@@ -224,6 +237,39 @@
             </div>
             <!--End Row-->
 
+            <div class="pagination" style="
+    margin-top: 20px;
+">
+    <style>
+        .pagination a, .pagination span {
+            padding: 5px 10px;
+            margin: 0 10px;  /* Increased from 5px to 10px */
+            border: 1px solid #ddd;
+            text-decoration: none;
+            display: inline-block;  /* Ensures consistent spacing */
+        }
+        .pagination span {
+            background-color: #f0f0f0;
+        }
+    </style>
+    <!-- Your pagination links here -->
+    <% if (currentPage > 1) { %>
+      <a href="/users/dashboard?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+      <% } %>
+      
+      <% for(let i = 1; i <= totalPages; i++) { %>
+        <% if (i === currentPage) { %>
+          <span><%= i %></span>
+          <% } else { %>
+            <a href="/users/dashboard?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+            <% } %>
+            <% } %>
+            
+            <% if (currentPage < totalPages) { %>
+              <a href="/users/dashboard?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+              <% } %>
+            </div>
+            
             <!--End Dashboard Content-->
 
             <!--start overlay-->
