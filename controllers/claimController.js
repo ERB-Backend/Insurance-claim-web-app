@@ -243,21 +243,75 @@ exports.claimByObjectId = async (req, res) => {
     });
   }
 };
-//1.1.2
+// //1.1.2
+// exports.claimByObjectIdUpdateStatus = async (req, res) => {
+//   try {
+//     const { objectId } = req.query;
+//     const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
+//     console.log("typeOf search_objectId : ", typeof search_objectId);
+//     return await Claim.updateOne(
+//       { _id: search_objectId },
+//       { status: req.query.status },
+//       { $set: { isActive: true } }
+//     );
+//   } catch (err) {
+//     res.status(404).json({
+//       status: "fail",
+//       message: err,
+//     });
+//   }
+// };
+//1.1.2.1
+// exports.claimByObjectIdUpdateStatus = async (req, res) => {
+//   try {
+//     const { objectId } = req.query;
+//     const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
+//     console.log("typeOf search_objectId : ", typeof search_objectId);
+
+//     const claim = await Claim.findOne({ _id: search_objectId });
+//     if (!claim) {
+//       return res.status(404).json({
+//         status: "fail",
+//         message: "Claim not found",
+//       });
+//     }
+//     // Update the fields
+//     claim.status = req.query.status;
+//     claim.isActive = true;
+//     // Push the new message
+//     //claim.messages.push({ status: req.query.status });
+//     // Save the document
+//     const updatedClaim = await claim.save();
+//     // res.status(200).json({
+//     //   status: "success",
+//     //   data: updatedClaim,
+//     // });
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "fail",
+//       message: err.message,
+//     });
+//   }
+// };
+//1.1.2.2
 exports.claimByObjectIdUpdateStatus = async (req, res) => {
+
   try {
-    const { objectId } = req.query;
-    const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
-    console.log("typeOf search_objectId : ", typeof search_objectId);
-    return await Claim.updateOne(
+    const { objectId, status } = req.query;
+    const search_objectId = new mongoose.Types.ObjectId(objectId);
+    return await Claim.findOneAndUpdate(
       { _id: search_objectId },
-      { status: req.query.status },
-      { $set: { isActive: true } }
+      {
+        status: status,
+        isActive: true,
+        $push: { messages: { status: status } },
+      },
+      { new: true, runValidators: true }
     );
   } catch (err) {
-    res.status(404).json({
+    res.status(400).json({
       status: "fail",
-      message: err,
+      message: err.message,
     });
   }
 };
