@@ -27,6 +27,26 @@
     <link href="/css/sidebar-menu.css" rel="stylesheet" />
     <!-- Custom Style-->
     <link href="/css/app-style.css" rel="stylesheet" />
+
+    <style>
+      .table-scrollable {
+        height: 400px; /* Adjust this value as needed */
+        overflow-y: auto;
+        border: 1px solid #dee2e6; /* Optional: adds a border around the scrollable area */
+      }
+
+      .table-scrollable table {
+        margin-bottom: 0; /* Removes the default margin at the bottom of the table */
+      }
+
+      /* Optional: Fix the table header */
+      .table-scrollable thead th {
+        position: sticky;
+        top: 0;
+        background-color: #fff; /* Ensure the header has a background */
+        z-index: 1;
+      }
+    </style>
   </head>
 
   <body class="bg-theme bg-theme1">
@@ -97,6 +117,7 @@
             <% delete error; %>
             <!-- Clear the error after displaying -->
             <% } %>
+
             <div class="card">
               <div class="card-body">
                 <ul
@@ -140,23 +161,25 @@
                       </div>
                     </div>
                     <div class="table-responsive">
-                      <table class="table table-hover table-striped">
-                        <tbody>
-                          <% claims.forEach(claim => { %> <%
-                          claim.messages.forEach(message => { %>
-                          <tr>
-                            <td>
-                              <span class="float-right font-weight-bold">
-                                <%= moment(message.date).fromNow() %>
-                              </span>
-                              Your claim of policy #<%= claim.policyNumber %>
-                              was <%= message.status %> on <%=
-                              moment(message.date).format('D MMM YYYY') %>
-                            </td>
-                          </tr>
-                          <% }) %> <% }) %>
-                        </tbody>
-                      </table>
+                      <div class="table-scrollable">
+                        <table class="table table-hover table-striped">
+                          <tbody>
+                            <% claims.forEach(claim => { %> <%
+                            claim.messages.forEach(message => { %>
+                            <tr>
+                              <td>
+                                <span class="float-right font-weight-bold">
+                                  <%= moment(message.date).fromNow() %>
+                                </span>
+                                Your claim of policy #<%= claim.policyNumber %>
+                                was <%= message.status %> on <%=
+                                moment(message.date).format('D MMM YYYY') %>
+                              </td>
+                            </tr>
+                            <% }) %> <% }) %>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                   <div class="tab-pane" id="edit">

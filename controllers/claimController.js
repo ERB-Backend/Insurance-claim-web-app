@@ -121,7 +121,36 @@ exports.getAllClaims = async (req, res) => {
 exports.getUserClaims = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    return await Claim.find({ userId: userId }).sort({ createdAt: -1 });
+
+    const page = parseInt(req.query.page) || 1; // Current page
+    const limit = parseInt(req.query.limit) || 10; // Items per page
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalDocs = await Claim.countDocuments({ userId: userId }).exec();
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    console.log("Docs", totalDocs);
+    console.log("Pages", totalPages);
+
+    const allClaims = await Claim.find({ userId: userId });
+    // Get paginated data
+    const claims = await Claim.find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    // console.log("👋👋👋👋 claims", claims);
+
+    res.render("test", {
+      allClaims: allClaims,
+      claims: claims,
+      currentPage: page,
+      totalPages: totalPages,
+      limit: limit,
+    });
   } catch (err) {
     req.session.user.error = err.message;
     res.redirect("users/forms");
@@ -137,45 +166,92 @@ exports.sortUserClaims = async (req, res) => {
     const userId = req.session.user._id;
     const expr = req.body.field;
 
-    switch (expr) {
-      case "policyNumber":
-        return await Claim.find({ userId: userId }).sort({
-          policyNumber: -1,
-        });
-        break;
-
-      case "amount":
-        return await Claim.find({ userId: userId }).sort({
-          amount: -1,
-        });
-        break;
-
-      case "createdAt":
-        return await Claim.find({ userId: userId }).sort({
-          createdAt: -1,
-        });
-        break;
-
-      case "status":
-        return await Claim.find({ userId: userId }).sort({
-          status: 1,
-        });
-        break;
-
-      default:
-        return await Claim.find({ userId: userId }).sort({
-          createdAt: -1,
-          policyName: 1,
-        });
-        break;
+    if (typeof req.session.sortOrders === "undefined") {
+      req.session.sortOrders = {
+        policyNumberSort: 1,
+        amountSort: 1,
+        createdAtSort: 1,
+        statusSort: 1,
+      };
     }
-    res.status(200).json({
-      status: "success",
-      results: claims.length,
-      data: {
-        claims,
-      },
+
+    req.session.sortOrders[`${expr}Sort`] =
+      req.session.sortOrders[`${expr}Sort`] === 1 ? -1 : 1;
+
+    const order = req.session.sortOrders[`${expr}Sort`];
+
+    const page = parseInt(req.query.page) || 1; // Current page
+    const limit = parseInt(req.query.limit) || 10; // Items per page
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalDocs = await Claim.countDocuments({ userId: userId }).exec();
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    const allClaims = await Claim.find({ userId: userId });
+
+    // Get paginated data
+
+    const claims = await Claim.find({ userId: userId })
+      .sort({ [expr]: order })
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    // console.log("👋👋👋👋 claims", claims);
+
+    res.render("test", {
+      allClaims: allClaims,
+      claims: claims,
+      currentPage: page,
+      totalPages: totalPages,
+      limit: limit,
+      sortOrders: req.session.sortOrders,
     });
+
+    // const userId = req.session.user._id;
+    // const expr = req.body.field;
+
+    // switch (expr) {
+    //   case "policyNumber":
+    //     return await Claim.find({ userId: userId }).sort({
+    //       policyNumber: -1,
+    //     });
+    //     break;
+
+    //   case "amount":
+    //     return await Claim.find({ userId: userId }).sort({
+    //       amount: -1,
+    //     });
+    //     break;
+
+    //   case "createdAt":
+    //     return await Claim.find({ userId: userId }).sort({
+    //       createdAt: -1,
+    //     });
+    //     break;
+
+    //   case "status":
+    //     return await Claim.find({ userId: userId }).sort({
+    //       status: 1,
+    //     });
+    //     break;
+
+    //   default:
+    //     return await Claim.find({ userId: userId }).sort({
+    //       createdAt: -1,
+    //       policyName: 1,
+    //     });
+    //     break;
+    // }
+    // res.status(200).json({
+    //   status: "success",
+    //   results: claims.length,
+    //   data: {
+    //     claims,
+    //   },
+    // });
   } catch (err) {
     res.status(404).json({
       status: "fail",
@@ -207,20 +283,19 @@ exports.allClaims = async (req, res) => {
 
     const claims = await Claim.find({}).sort(sortOrder);
     const users = await User.find({});
-    console.log('users[0].name :', users[0].name);
+    console.log("users[0].name :", users[0].name);
     //users.forEach(x => console.log(x.name));
-    console.log('****** user _id ******');
-    users.forEach(x => console.log(x._id, typeof (x._id)));
+    console.log("****** user _id ******");
+    users.forEach((x) => console.log(x._id, typeof x._id));
     const mappedClaims = claims.map((claim) => {
       //console.log('claim.userId : ', claim.userId);
-      const user = users.filter(x => x._id.equals(claim.userId));
-      console.log('user : ', user);
+      const user = users.filter((x) => x._id.equals(claim.userId));
+      console.log("user : ", user);
       // console.log('user.name : ', user[0].name);
-      const n = (user.length > 0) ? user[0].name : 'undefined';
+      const n = user.length > 0 ? user[0].name : "undefined";
       return Object.assign(claim, { userName: n });
-    }
-    );
-    return mappedClaims;//claims;
+    });
+    return mappedClaims; //claims;
   } catch (err) {
     res.status(404).json({
       status: "fail",
@@ -232,7 +307,7 @@ exports.allClaims = async (req, res) => {
 //1.1.1
 exports.claimByObjectId = async (req, res) => {
   try {
-    const { objectId } = req.query.objectId;//668f60a271be094fd33af9f3
+    const { objectId } = req.query.objectId; //668f60a271be094fd33af9f3
     const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
     console.log("typeOf search_objectId : ", typeof search_objectId);
     return await Claim.findOne({ _id: search_objectId });
@@ -336,28 +411,26 @@ exports.claimsByUserId = async (req, res) => {
     //console.log('typeOf req.session.user._id : ', typeof (req.session.user._id));//string
     const userObjectId = new ObjectId(req.session.user._id);
     //console.log('typeOf userObjectId : ', typeof (userObjectId));//object
-    const claims = await Claim.find({ "userId": userObjectId }, {
-      _id: 1,
-      userId: 1,
-      policyNumber: 1,
-      amount: 1,
-      status: 1,
-      messages: 1,
-      createdAt: 1,
-      updatedAt: 1,
-    }).sort(sortOrder);
+    const claims = await Claim.find(
+      { userId: userObjectId },
+      {
+        _id: 1,
+        userId: 1,
+        policyNumber: 1,
+        amount: 1,
+        status: 1,
+        messages: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      }
+    ).sort(sortOrder);
 
     console.log("claims.length : ", claims.length);
     if (claims.length > 0) {
       //console.log("claims[0] : ", claims[0]);
       const user = await User.findOne({ _id: userObjectId });
 
-      console.log(
-        "userId : ",
-        userObjectId,
-        "have user.name : ",
-        user.name
-      );
+      console.log("userId : ", userObjectId, "have user.name : ", user.name);
       const mappedClaims = claims.map((claim) =>
         Object.assign(claim, { userName: user.name })
       );
@@ -376,6 +449,7 @@ exports.claimsByUserId = async (req, res) => {
   }
 };
 //1.3.1
+
 exports.claimsByPolicyNumber = async (req, res) => {
   console.log(" req.query.policyNumber : ", req.query.policyNumber);
   console.log(" req.query.sortByPolicyNumber : ", req.query.sortByPolicyNumber);
@@ -406,9 +480,6 @@ exports.claimsByPolicyNumber = async (req, res) => {
     });
   }
 };
-
-
-
 
 //2.0
 exports.allUsers = async (req, res) => {
@@ -611,22 +682,16 @@ decodedQueryObject hasOwnProperty account is NO
   }
 }
 function testConnect() {
-  const { MongoClient } = require('mongodb');
-  const client = new MongoClient('mongodb://localhost:27017');
-  const db = client.db('test');
-
-
-
+  const { MongoClient } = require("mongodb");
+  const client = new MongoClient("mongodb://localhost:27017");
+  const db = client.db("test");
 }
 function testRemoteConnect() {
-  const { MongoClient } = require('mongodb');
-  const uri = "mongodb+srv://demo:btWOND4S2uLxMNjB@cluster0.bd9bzhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true";
+  const { MongoClient } = require("mongodb");
+  const uri =
+    "mongodb+srv://demo:btWOND4S2uLxMNjB@cluster0.bd9bzhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true";
   const client = new MongoClient(uri);
-  const db = client.db('test').collection('users');
-
-
-
-
+  const db = client.db("test").collection("users");
 }
 function testOnView() {
   // const { MongoClient } = require('mongodb');
@@ -667,5 +732,4 @@ function testOnView() {
   ); //END createView
 
   db.user_claims.find({ userId: steve });
-};
-
+}

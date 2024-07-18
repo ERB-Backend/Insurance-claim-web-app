@@ -32,7 +32,6 @@ app.use("/", indexRouter);
 app.use("/users", addUserInfo, usersRouter);
 app.use("/admin", adminRouter);
 
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -61,6 +60,13 @@ app.use(function (err, req, res, next) {
     res.redirect("/users");
     next();
   }
+  if (err.name === "MongoServerError") {
+    console.log("🔥🔥🔥🔥🔥🔥 Error Middleware", err);
+    res.render("register", {
+      error: "This User ID is already taken. Please choose a different one.",
+    });
+    next();
+  }
 
   function handleValidationError(err, req) {
     // Extract error messages
@@ -74,7 +80,7 @@ app.use(function (err, req, res, next) {
     // Store the error message in the session
     if (!req.session.user) {
       let error = errorMessage;
-      return res.render("login", { error: error });
+      return res.render("register", { error: error });
     } else {
       req.session.user.error = errorMessage;
     }
