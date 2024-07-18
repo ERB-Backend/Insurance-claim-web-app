@@ -283,20 +283,19 @@ exports.allClaims = async (req, res) => {
 
     const claims = await Claim.find({}).sort(sortOrder);
     const users = await User.find({});
-    console.log('users[0].name :', users[0].name);
+    console.log("users[0].name :", users[0].name);
     //users.forEach(x => console.log(x.name));
-    console.log('****** user _id ******');
-    users.forEach(x => console.log(x._id, typeof (x._id)));
+    console.log("****** user _id ******");
+    users.forEach((x) => console.log(x._id, typeof x._id));
     const mappedClaims = claims.map((claim) => {
       //console.log('claim.userId : ', claim.userId);
-      const user = users.filter(x => x._id.equals(claim.userId));
-      console.log('user : ', user);
+      const user = users.filter((x) => x._id.equals(claim.userId));
+      console.log("user : ", user);
       // console.log('user.name : ', user[0].name);
-      const n = (user.length > 0) ? user[0].name : 'undefined';
+      const n = user.length > 0 ? user[0].name : "undefined";
       return Object.assign(claim, { userName: n });
-    }
-    );
-    return mappedClaims;//claims;
+    });
+    return mappedClaims; //claims;
   } catch (err) {
     res.status(404).json({
       status: "fail",
@@ -308,7 +307,7 @@ exports.allClaims = async (req, res) => {
 //1.1.1
 exports.claimByObjectId = async (req, res) => {
   try {
-    const { objectId } = req.query.objectId;//668f60a271be094fd33af9f3
+    const { objectId } = req.query.objectId; //668f60a271be094fd33af9f3
     const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
     console.log("typeOf search_objectId : ", typeof search_objectId);
     return await Claim.findOne({ _id: search_objectId });
@@ -319,21 +318,26 @@ exports.claimByObjectId = async (req, res) => {
     });
   }
 };
-//1.1.2
+
+//1.1.2.2
+
 exports.claimByObjectIdUpdateStatus = async (req, res) => {
   try {
-    const { objectId } = req.query;
-    const search_objectId = new mongoose.Types.ObjectId(req.query.objectId);
-    console.log("typeOf search_objectId : ", typeof search_objectId);
-    return await Claim.updateOne(
+    const { objectId, status } = req.query;
+    const search_objectId = new mongoose.Types.ObjectId(objectId);
+    return await Claim.findOneAndUpdate(
       { _id: search_objectId },
-      { status: req.query.status },
-      { $set: { isActive: true } }
+      {
+        status: status,
+        isActive: true,
+        $push: { messages: { status: status } },
+      },
+      { new: true, runValidators: true }
     );
   } catch (err) {
-    res.status(404).json({
+    res.status(400).json({
       status: "fail",
-      message: err,
+      message: err.message,
     });
   }
 };
@@ -358,28 +362,26 @@ exports.claimsByUserId = async (req, res) => {
     //console.log('typeOf req.session.user._id : ', typeof (req.session.user._id));//string
     const userObjectId = new ObjectId(req.session.user._id);
     //console.log('typeOf userObjectId : ', typeof (userObjectId));//object
-    const claims = await Claim.find({ "userId": userObjectId }, {
-      _id: 1,
-      userId: 1,
-      policyNumber: 1,
-      amount: 1,
-      status: 1,
-      messages: 1,
-      createdAt: 1,
-      updatedAt: 1,
-    }).sort(sortOrder);
+    const claims = await Claim.find(
+      { userId: userObjectId },
+      {
+        _id: 1,
+        userId: 1,
+        policyNumber: 1,
+        amount: 1,
+        status: 1,
+        messages: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      }
+    ).sort(sortOrder);
 
     console.log("claims.length : ", claims.length);
     if (claims.length > 0) {
       //console.log("claims[0] : ", claims[0]);
       const user = await User.findOne({ _id: userObjectId });
 
-      console.log(
-        "userId : ",
-        userObjectId,
-        "have user.name : ",
-        user.name
-      );
+      console.log("userId : ", userObjectId, "have user.name : ", user.name);
       const mappedClaims = claims.map((claim) =>
         Object.assign(claim, { userName: user.name })
       );
@@ -398,6 +400,7 @@ exports.claimsByUserId = async (req, res) => {
   }
 };
 //1.3.1
+
 exports.claimsByPolicyNumber = async (req, res) => {
   console.log(" req.query.policyNumber : ", req.query.policyNumber);
   console.log(" req.query.sortByPolicyNumber : ", req.query.sortByPolicyNumber);
@@ -428,9 +431,6 @@ exports.claimsByPolicyNumber = async (req, res) => {
     });
   }
 };
-
-
-
 
 //2.0
 exports.allUsers = async (req, res) => {
@@ -633,22 +633,16 @@ decodedQueryObject hasOwnProperty account is NO
   }
 }
 function testConnect() {
-  const { MongoClient } = require('mongodb');
-  const client = new MongoClient('mongodb://localhost:27017');
-  const db = client.db('test');
-
-
-
+  const { MongoClient } = require("mongodb");
+  const client = new MongoClient("mongodb://localhost:27017");
+  const db = client.db("test");
 }
 function testRemoteConnect() {
-  const { MongoClient } = require('mongodb');
-  const uri = "mongodb+srv://demo:btWOND4S2uLxMNjB@cluster0.bd9bzhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true";
+  const { MongoClient } = require("mongodb");
+  const uri =
+    "mongodb+srv://demo:btWOND4S2uLxMNjB@cluster0.bd9bzhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true";
   const client = new MongoClient(uri);
-  const db = client.db('test').collection('users');
-
-
-
-
+  const db = client.db("test").collection("users");
 }
 function testOnView() {
   // const { MongoClient } = require('mongodb');
@@ -689,5 +683,4 @@ function testOnView() {
   ); //END createView
 
   db.user_claims.find({ userId: steve });
-};
-
+}
