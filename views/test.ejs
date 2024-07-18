@@ -216,9 +216,15 @@
                               <%=claim.createdAt.toLocaleDateString() %>
                             </td>
                             <td>
-                              <span class="badge badge-primary">
-                                <%=claim.status %>
-                              </span>
+                              <span class="badge <%= 
+                              claim.status === 'pending' ? 'badge-primary' :
+                              claim.status === 'processing' ? 'badge-secondary' :
+                              claim.status === 'approved' ? 'badge-success' :
+                              claim.status === 'declined' ? 'badge-danger' :
+                              'badge-primary'
+                            %>">
+                              <%= claim.status %>
+                            </span>
                             </td>
                           </tr>
                           <% })%>

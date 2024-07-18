@@ -209,49 +209,6 @@ exports.sortUserClaims = async (req, res) => {
       limit: limit,
       sortOrders: req.session.sortOrders,
     });
-
-    // const userId = req.session.user._id;
-    // const expr = req.body.field;
-
-    // switch (expr) {
-    //   case "policyNumber":
-    //     return await Claim.find({ userId: userId }).sort({
-    //       policyNumber: -1,
-    //     });
-    //     break;
-
-    //   case "amount":
-    //     return await Claim.find({ userId: userId }).sort({
-    //       amount: -1,
-    //     });
-    //     break;
-
-    //   case "createdAt":
-    //     return await Claim.find({ userId: userId }).sort({
-    //       createdAt: -1,
-    //     });
-    //     break;
-
-    //   case "status":
-    //     return await Claim.find({ userId: userId }).sort({
-    //       status: 1,
-    //     });
-    //     break;
-
-    //   default:
-    //     return await Claim.find({ userId: userId }).sort({
-    //       createdAt: -1,
-    //       policyName: 1,
-    //     });
-    //     break;
-    // }
-    // res.status(200).json({
-    //   status: "success",
-    //   results: claims.length,
-    //   data: {
-    //     claims,
-    //   },
-    // });
   } catch (err) {
     res.status(404).json({
       status: "fail",
@@ -259,6 +216,104 @@ exports.sortUserClaims = async (req, res) => {
     });
   }
 };
+// exports.sortUserClaims = async (req, res) => {
+//   try {
+//     const userId = req.session.user._id;
+//     const expr = req.body.field;
+
+//     if (typeof req.session.sortOrders === "undefined") {
+//       req.session.sortOrders = {
+//         policyNumberSort: 1,
+//         amountSort: 1,
+//         createdAtSort: 1,
+//         statusSort: 1,
+//       };
+//     }
+
+//     req.session.sortOrders[`${expr}Sort`] =
+//       req.session.sortOrders[`${expr}Sort`] === 1 ? -1 : 1;
+
+//     const order = req.session.sortOrders[`${expr}Sort`];
+
+//     const page = parseInt(req.query.page) || 1; // Current page
+//     const limit = parseInt(req.query.limit) || 10; // Items per page
+
+//     const startIndex = (page - 1) * limit;
+//     const endIndex = page * limit;
+
+//     const totalDocs = await Claim.countDocuments({ userId: userId }).exec();
+//     const totalPages = Math.ceil(totalDocs / limit);
+
+//     const allClaims = await Claim.find({ userId: userId });
+
+//     // Get paginated data
+
+//     const claims = await Claim.find({ userId: userId })
+//       .sort({ [expr]: order })
+//       .skip(startIndex)
+//       .limit(limit)
+//       .exec();
+
+//     // console.log("👋👋👋👋 claims", claims);
+
+//     res.render("test", {
+//       allClaims: allClaims,
+//       claims: claims,
+//       currentPage: page,
+//       totalPages: totalPages,
+//       limit: limit,
+//       sortOrders: req.session.sortOrders,
+//     });
+
+//     // const userId = req.session.user._id;
+//     // const expr = req.body.field;
+
+//     // switch (expr) {
+//     //   case "policyNumber":
+//     //     return await Claim.find({ userId: userId }).sort({
+//     //       policyNumber: -1,
+//     //     });
+//     //     break;
+
+//     //   case "amount":
+//     //     return await Claim.find({ userId: userId }).sort({
+//     //       amount: -1,
+//     //     });
+//     //     break;
+
+//     //   case "createdAt":
+//     //     return await Claim.find({ userId: userId }).sort({
+//     //       createdAt: -1,
+//     //     });
+//     //     break;
+
+//     //   case "status":
+//     //     return await Claim.find({ userId: userId }).sort({
+//     //       status: 1,
+//     //     });
+//     //     break;
+
+//     //   default:
+//     //     return await Claim.find({ userId: userId }).sort({
+//     //       createdAt: -1,
+//     //       policyName: 1,
+//     //     });
+//     //     break;
+//     // }
+//     // res.status(200).json({
+//     //   status: "success",
+//     //   results: claims.length,
+//     //   data: {
+//     //     claims,
+//     //   },
+//     // });
+//   } catch (err) {
+//     res.status(404).json({
+//       status: "fail",
+//       message: err,
+//     });
+//   }
+// };
 
 //------ steve ------
 //1.0
