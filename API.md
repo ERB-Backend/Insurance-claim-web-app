@@ -1,4 +1,5 @@
-API doc by steve v1.0.02  2024-07-16
+API doc by steve v1.0.03  2024-07-19
+
 
 1.0 allClaims
 Method: Get
@@ -38,7 +39,6 @@ Output:
   },
  …..
 ]
-
 1.1.1 claimByObjectId
 Method : Get
 Parameter 
@@ -84,6 +84,32 @@ Output:
   "upsertedCount": 0,
   "matchedCount": 1
 }
+
+1.1.3 claimByObjectIdDelete
+Method : Get
+URL example :
+http://127.0.0.1:1234/admin/claimByObjectIdDelete?objectId=668f5ffc71be094fd33af9f2
+Output:
+{
+  "_id": "668f5ffc71be094fd33af9f2",
+  "userId": "6688058db58ce72799586539",
+  "policyNumber": 123456,
+  "amount": 111111,
+  "status": "approved",
+  "messages": [
+    {
+      "status": "pending",
+      "date": "2024-07-11T04:30:52.294Z"
+    }
+  ],
+  "documents": [
+    
+  ],
+  "createdAt": "2024-07-11T04:30:52.293Z",
+  "updatedAt": "2024-07-16T12:01:24.297Z",
+  "__v": 0
+}
+
 
 1.2.1 claimsByUserId
 Method : Get
@@ -193,3 +219,6 @@ Output: Json Default
   "upsertedCount": 0,
   "matchedCount": 0
 }
+
+
+
