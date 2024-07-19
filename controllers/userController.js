@@ -43,8 +43,8 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
 
   // Only save if there are changes
   if (isChangingPassword || (name && name !== user.name)) {
+    req.session.user = user;
     await user.save();
-    // req.session.user = user;
     req.session.user.message = "Profile updated successfully";
     console.log(req.session.user);
   } else {
