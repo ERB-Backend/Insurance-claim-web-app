@@ -8,6 +8,7 @@ const upload = multer({
   dest: "upload/claim",
   limits: { fileSize: 1024 * 1024 },
 });
+const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
 var router = express.Router();
@@ -29,36 +30,88 @@ router
 router.post(
   "/updateProfile",
   authController.protect,
-  userController.updatePassword
+  userController.updateProfile
 );
 
 router.route("/").get(authController.protect, async function (req, res, next) {
-  const userName = req.session.user.name;
-  const claims = await Claim.find({ userId: req.session.user._id }).sort({
-    createdAt: -1,
-  });
-  let error = null;
-  let message = null;
-  if (req.session.user && req.session.user.error) {
-    error = req.session.user.error;
-    delete req.session.user.error;
+  try {
+    const userName = req.session.user.name;
+    const messages = await getClaimsWithMessages(req.session.user._id);
+    let error = null;
+    let message = null;
+    if (req.session.user && req.session.user.error) {
+      error = req.session.user.error;
+      delete req.session.user.error;
+    }
+    if (req.session.user && req.session.user.message) {
+      message = req.session.user.message;
+      delete req.session.user.message;
+    }
+
+    console.log("Number of messages to render:", messages.length);
+
+    res.render("profile", {
+      userName: userName,
+      messages,
+      error: error,
+      message: message,
+    });
+  } catch (err) {
+    console.error("Error in route handler:", err);
+    next(err);
   }
-  if (req.session.user && req.session.user.message) {
-    message = req.session.user.message;
-    delete req.session.user.message;
-  }
-  res.render("profile", {
-    userName: userName,
-    claims,
-    error: error,
-    message: message,
-  });
 });
+
+async function getClaimsWithMessages(userId) {
+  try {
+    const messages = await Claim.aggregate([
+      // Match claims for the current user
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+
+      // Unwind the messages array to create a document for each message
+      { $unwind: { path: "$messages", preserveNullAndEmptyArrays: false } },
+
+      // Sort by message date (newest first)
+      { $sort: { "messages.date": -1 } },
+
+      // Project the required fields for each message
+      {
+        $project: {
+          policyNumber: 1,
+          claimNumber: 1,
+          status: "$messages.status",
+          date: "$messages.date",
+          messageText: {
+            $concat: [
+              "Your claim of policy #",
+              { $toString: "$policyNumber" },
+              " was ",
+              "$messages.status",
+              " on ",
+              { $dateToString: { format: "%d %b %Y", date: "$messages.date" } },
+              " **Ref No. ",
+              { $toString: "$claimNumber" },
+              "**",
+            ],
+          },
+        },
+      },
+    ]).exec();
+
+    console.log("Number of individual messages:", messages.length);
+    console.log("All messages:", JSON.stringify(messages, null, 2));
+
+    return messages;
+  } catch (error) {
+    console.error("Error fetching claims and messages:", error);
+    throw error;
+  }
+}
 
 router
   .route("/dashboard")
-  .get(authController.protect, claimController.getUserClaims)
-  .post(authController.protect, claimController.sortUserClaims);
+  .get(authController.protect, claimController.getUserClaims);
+// .post(authController.protect, claimController.sortUserClaims);
 
 router.route("/forms").get(authController.protect, (req, res, next) => {
   userId = req.session.user.userId;
@@ -97,6 +150,70 @@ router
 
 router.route("/logout").post(authController.logout);
 router.route("/deleteAccount").post(userController.deleteCustomer);
+
+router.route("/render-claims").post((req, res) => {
+  console.log("Received request to render claims");
+  try {
+    const claims = req.body.claims;
+    console.log("Claims received:", JSON.stringify(claims, null, 2));
+
+    if (!claims || !Array.isArray(claims)) {
+      throw new Error("Invalid claims data received");
+    }
+
+    res.render("partials/claim-result", { claims }, (err, html) => {
+      if (err) {
+        console.error("Error rendering claims:", err);
+        res.status(500).json({
+          error: "Error rendering claims",
+          details: err.message,
+          stack: err.stack,
+        });
+      } else {
+        console.log("Claims rendered successfully");
+        res.send(html);
+      }
+    });
+  } catch (error) {
+    console.error("Error in /render-claims:", error);
+    res.status(500).json({
+      error: "Server error",
+      details: error.message,
+      stack: error.stack,
+    });
+  }
+});
+
+router.get("/claims", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortField = req.query.sortField || "createdAt";
+    const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;
+
+    const skip = (page - 1) * limit;
+
+    const claims = await Claim.find({ userId: req.session.user._id })
+      .sort({ [sortField]: sortOrder })
+      .skip(skip)
+      .limit(limit);
+
+    const totalClaims = await Claim.countDocuments({
+      userId: req.session.user._id,
+    });
+    const totalPages = Math.ceil(totalClaims / limit);
+
+    res.json({
+      claims,
+      currentPage: page,
+      totalPages,
+      totalClaims,
+    });
+  } catch (error) {
+    console.error("Error fetching claims:", error);
+    res.status(500).json({ error: "An error occurred while fetching claims" });
+  }
+});
 
 //   Michael end
 

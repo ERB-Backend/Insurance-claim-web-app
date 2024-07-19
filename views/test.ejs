@@ -35,7 +35,70 @@
     font-size: 15px;
     font-family: Arial, Helvetica, sans-serif,Courier;
 }
+
+#pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+}
+
+#pagination span {
+  margin: 0 10px;
+}
+.sort-header {
+    cursor: pointer;
+    position: relative;
+    padding-right: 25px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sort-header::before,
+.sort-header::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.sort-header::before {
+    border-bottom: 8px solid #fff; /* Changed to white */
+    top: 25%;
+}
+
+.sort-header::after {
+    border-top: 8px solid #fff; /* Changed to white */
+    bottom: 25%;
+}
+
+
+
+.sort-header.sort-asc,
+.sort-header.sort-desc {
+    background-color: #007bff; /* Blue background when sorted */
+    color: white; /* White text when sorted */
+}
+
+.sort-header.sort-asc::before,
+.sort-header.sort-desc::after {
+    opacity: 1;
+}
+
+/* Make arrows more visible on hover */
+.sort-header:hover::before,
+.sort-header:hover::after {
+    opacity: 0.8;
+}
 </style>
+
 <body class="bg-theme bg-theme1">
   <!-- Start wrapper-->
   <div id="wrapper">
@@ -161,114 +224,36 @@
                   <div class="table-responsive">
                     <table id="claimTable" class="table align-items-center table-flush table-borderless">
                       <thead>
-                        <form action="/users/dashboard" method="post">
-                          <tr>
-                            <!--   <th><button type="sumbit"  id="companyName" name="field" value="companyName" >Company Name</button></th>  -->
-                            <th><button                                  
-                          
-                                type="submit" id="policyNumber" name="field" value="policyNumber" > Policy
-                                  Number</button>
-                                    <%= typeof sortOrders === 'undefined'|| sortOrders.policyNumberSort === 1 ? '▲' : '▼' %>
-
-                                </th>
-                            <th><button                                  
-                                
-                                type="submit" id="amount" name="field" value="amount" >Claim Amount</button>
-
-                                  <%= typeof sortOrders === 'undefined'||  sortOrders.amountSort === 1 ? '▲' : '▼' %>
-
-                            </th>
-                            <th><button                                  
-                                
-                                type="submit" id="createdAt" name="field" value="createdAt" >Date</button>
-
-                                  <%= typeof sortOrders === 'undefined'|| sortOrders.createdAtSort === 1 ? '▲' : '▼' %>
-
-                              </th>
-                            <th><button                                                           
-                                
-                                type="submit" id="status" name="field" value="status" >Status</button>
-
-                                  <%= typeof sortOrders === 'undefined'|| sortOrders.statusSort === 1 ? '▲' : '▼' %>
-
-                            </th>
-                            <!--  <th>Status</th>   -->
-                          </tr>
-                        </form>
-                          <!-- <th>Company Name</th> -->
-                          <!-- <th>Policy Number</th>
-                          <th>Claim Amount</th>
-                          <th>Date</th>
-                          <th>Status</th> -->
+                        <tr>
+                          <th class="sort-header" data-field="policyNumber">
+                            Policy Number <span class="sort-indicator"></span>
+                        </th>
+                            <th class="sort-header" data-field="amount">Amount<span class="sort-indicator"></span>
+                            </th></th>
+                            <th class="sort-header" data-field="createdAt">Date<span class="sort-indicator"></span>
+                            </th></th>
+                            <th class="sort-header" data-field="status">Status<span class="sort-indicator"></span>
+                            </th></th>
                         </tr>
-                      </thead>
-                      <tbody>
-                        <% claims.forEach(claim=>{ %>
-                          <tr>
-                            <!-- <td>
-                              <%=claim.companyName %>
-                            </td> -->
-                            <td>#<%=claim.policyNumber %>
-                            </td>
-                            <td>$ <%=claim.amount.toLocaleString() %>
-                            </td>
-                            <td>
-                              <%=claim.createdAt.toLocaleDateString() %>
-                            </td>
-                            <td>
-                              <span class="badge <%= 
-                              claim.status === 'pending' ? 'badge-primary' :
-                              claim.status === 'processing' ? 'badge-secondary' :
-                              claim.status === 'approved' ? 'badge-success' :
-                              claim.status === 'declined' ? 'badge-danger' :
-                              'badge-primary'
-                            %>">
-                              <%= claim.status %>
-                            </span>
-                            </td>
-                          </tr>
-                          <% })%>
+                    </thead>
+                    <tbody id="claimsTableBody">
+                        <%- include('partials/claim-result.ejs', { claims: claims }) %>
                       </tbody>
                     </table>
+                    <div id="pagination"></div>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
             <!--End Row-->
+            
+            
+         
 
-            <div class="pagination" style="
-    margin-top: 20px;
-">
-    <style>
-        .pagination a, .pagination span {
-            padding: 5px 10px;
-            margin: 0 10px;  /* Increased from 5px to 10px */
-            border: 1px solid #ddd;
-            text-decoration: none;
-            display: inline-block;  /* Ensures consistent spacing */
-        }
-        .pagination span {
-            background-color: #f0f0f0;
-        }
-    </style>
+           
     <!-- Your pagination links here -->
-    <% if (currentPage > 1) { %>
-      <a href="/users/dashboard?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
-      <% } %>
 
-      <% for(let i = 1; i <= totalPages; i++) { %>
-        <% if (i === currentPage) { %>
-          <span style="color: black;"><%= i %></span>
-          <% } else { %>
-            <a href="/users/dashboard?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
-            <% } %>
-            <% } %>
-
-            <% if (currentPage < totalPages) { %>
-              <a href="/users/dashboard?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
-              <% } %>
-            </div>
 
             <!--End Dashboard Content-->
 
@@ -308,6 +293,13 @@
       <script src="/plugins/Chart.js/Chart.min.js"></script>
       <!-- Index js -->
       <script src="/js/index.js"></script>
+
+      <script>
+        const initialClaimsCount = <%= claims.length %>;
+    </script>
+    <script src="/js/claim.js"></script>
+
+
       <!-- <script>
         //let sortOrder = "asc";
         const sortByCompanyNameButton = document.getElementById('sortByCompanyName');

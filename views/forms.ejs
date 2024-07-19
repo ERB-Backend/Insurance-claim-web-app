@@ -99,7 +99,7 @@
               </div>
               <% delete message; %> <!-- Clear the error after displaying -->
             <% } %>
-            <div class="col-lg-6">
+            <div class="col-lg">
               <div class="card">
                 <div class="card-body">
             <div class="col-lg-6">
@@ -116,6 +116,7 @@
                         name="policyNumber"
                         id="policyNumber"
                         placeholder="Enter Your Policy Number"
+                        required
                       />
                     </div>
                     <div class="form-group">
@@ -126,12 +127,13 @@
                         name="amount"
                         id="amount"
                         placeholder="Enter Claim Amount"
+                        required
                       />
                     </div>    
                     <div class="form-group">
                       <label for="amount">Date Incurred</label>
                       <input type="date" class="form-control form-control-rounded" name="incurredDate"
-                        id="dateIncurred" placeholder="Enter Incurred Date" />
+                        id="dateIncurred" placeholder="Enter Incurred Date"  required/>
                         <% if (error) { %>
                           <div class="error-message" style="color: red;">
                             <%= error %>
@@ -177,21 +179,22 @@
                         >
                       </div>
                     </div>
-                    <div class="form-group">
-                      <button
-                        type="submit"
-                        class="btn btn-light btn-round px-5"
-                      >
-                        <i class="icon-lock"></i> Submit
-                      </button>
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-light btn-round px-5 w-100">
+                            <i class="icon-lock"></i> Submit
+                          </button>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <button type="reset" class="btn btn-light btn-round px-5 w-100">
+                            <i class=""></i> Reset
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <button
-                      type="reset"
-                      class="btn btn-light btn-round px-5"
-                    >
-                      <i class=""></i> Reset
-                    </button>
                     </div>
                   </form>
                 </div>

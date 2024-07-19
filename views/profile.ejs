@@ -106,17 +106,19 @@
           <div class="row mt-3">
             <div class="col-lg-8">
               <% if (message) { %>
-              <h3 style="color: orange"><%= message %></h3>
-            </div>
-            <% delete message; %>
-            <!-- Clear the error after displaying -->
-            <% } %> <% if (error) { %>
-            <div class="error-message">
-              <h3 style="color: red"><%= error %></h3>
-            </div>
-            <% delete error; %>
-            <!-- Clear the error after displaying -->
-            <% } %>
+              <div class="error-message">
+                <h3 style="color: orange"><%= message %></h3>
+              </div>
+                <% delete message; %>
+              <!-- Clear the error after displaying -->
+              <% } %> <% if (error) { %>
+              <div class="error-message">
+                <h3 style="color: red"><%= error %></h3>
+              </div>
+                <% delete error; %>
+              <% } %>
+              
+              <!-- Clear the error after displaying -->
 
             <div class="card">
               <div class="card-body">
@@ -163,21 +165,24 @@
                     <div class="table-responsive">
                       <div class="table-scrollable">
                         <table class="table table-hover table-striped">
-                          <tbody>
-                            <% claims.forEach(claim => { %> <%
-                            claim.messages.forEach(message => { %>
+                          <% if (messages && messages.length > 0) { %>
+                            <tbody>
+                              <% messages.forEach(message => { %>
+                                <tr>
+                                  <td>
+                                    <span class="float-right font-weight-bold">
+                                      <%= moment(message.date).fromNow() %>
+                                    </span>
+                                    <%= message.messageText %>
+                                  </td>
+                                </tr>
+                              <% }) %>
+                            </tbody>
+                          <% } else { %>
                             <tr>
-                              <td>
-                                <span class="float-right font-weight-bold">
-                                  <%= moment(message.date).fromNow() %>
-                                </span>
-                                Your claim of policy #<%= claim.policyNumber %>
-                                was <%= message.status %> on <%=
-                                moment(message.date).format('D MMM YYYY') %>
-                              </td>
+                              <td>No messages found.</td>
                             </tr>
-                            <% }) %> <% }) %>
-                          </tbody>
+                          <% } %>
                         </table>
                       </div>
                     </div>
@@ -264,12 +269,12 @@
                         <div class="col-lg-9">
                           <input
                             type="reset"
-                            class="btn btn-secondary"
+                            class="btn btn-light"
                             value="Cancel"
                           />
                           <button
                             type="submit"
-                            class="btn btn-primary"
+                            class="btn btn-dark"
                             value="submit"
                           >
                             Submit

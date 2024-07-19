@@ -2,7 +2,7 @@ const Users = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 
 // Start by Michael
-exports.updatePassword = asyncHandler(async (req, res, next) => {
+exports.updateProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user._id;
   console.log(userId);
   const { name, currentPassword, password, passwordConfirm } = req.body;
@@ -44,8 +44,9 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   // Only save if there are changes
   if (isChangingPassword || (name && name !== user.name)) {
     await user.save();
-    req.session.user = user;
+    // req.session.user = user;
     req.session.user.message = "Profile updated successfully";
+    console.log(req.session.user);
   } else {
     req.session.user.error = "No changes were made";
   }

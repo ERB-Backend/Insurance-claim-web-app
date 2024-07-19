@@ -118,104 +118,112 @@ exports.getAllClaims = async (req, res) => {
 //   }
 // };
 
+// exports.getUserClaims = async (req, res) => {
+//   try {
+//     const userId = req.session.user._id;
+
+//     const page = parseInt(req.query.page) || 1; // Current page
+//     const limit = parseInt(req.query.limit) || 10; // Items per page
+
+//     const startIndex = (page - 1) * limit;
+//     const endIndex = page * limit;
+
+//     const totalDocs = await Claim.countDocuments({ userId: userId }).exec();
+//     const totalPages = Math.ceil(totalDocs / limit);
+
+//     console.log("Docs", totalDocs);
+//     console.log("Pages", totalPages);
+
+//     const allClaims = await Claim.find({ userId: userId });
+//     // Get paginated data
+//     const claims = await Claim.find({ userId: userId })
+//       .sort({ createdAt: -1 })
+//       .skip(startIndex)
+//       .limit(limit)
+//       .exec();
+
+//     // console.log("👋👋👋👋 claims", claims);
+
+//     res.render("test", {
+//       allClaims: allClaims,
+//       claims: claims,
+//       currentPage: page,
+//       totalPages: totalPages,
+//       limit: limit,
+//     });
+//   } catch (err) {
+//     req.session.user.error = err.message;
+//     res.redirect("users/forms");
+//   }
+// };
+
 exports.getUserClaims = async (req, res) => {
   try {
     const userId = req.session.user._id;
-
-    const page = parseInt(req.query.page) || 1; // Current page
-    const limit = parseInt(req.query.limit) || 10; // Items per page
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const totalDocs = await Claim.countDocuments({ userId: userId }).exec();
-    const totalPages = Math.ceil(totalDocs / limit);
-
-    console.log("Docs", totalDocs);
-    console.log("Pages", totalPages);
-
     const allClaims = await Claim.find({ userId: userId });
-    // Get paginated data
-    const claims = await Claim.find({ userId: userId })
-      .sort({ createdAt: -1 })
-      .skip(startIndex)
-      .limit(limit)
-      .exec();
-
-    // console.log("👋👋👋👋 claims", claims);
+    const someClaims = await Claim.find({ userId: userId }).limit(20);
 
     res.render("test", {
       allClaims: allClaims,
-      claims: claims,
-      currentPage: page,
-      totalPages: totalPages,
-      limit: limit,
+      claims: someClaims,
     });
   } catch (err) {
     req.session.user.error = err.message;
-    res.redirect("users/forms");
+    res.redirect("/users/forms");
   }
 };
 
+exports.sortClaims = async (req, res) => {
+  const offset = parseInt(req.query.offset) || 0;
+  const limit = parseInt(req.query.limit) || 10;
+  const sortField = req.query.sortField || "createdAt";
+  const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
+
+  try {
+    const claims = await Claim.find()
+      .sort({ [sortField]: sortOrder })
+      .skip(offset)
+      .limit(limit);
+    res.json({ claims });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching claims", error: error.message });
+  }
+};
+
+// exports.partialRenderClaims = async (req, res) => {
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 10;
+//   const sortField = req.query.sortField || "createdAt";
+//   const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
+
+//   const skip = (page - 1) * limit;
+
+//   try {
+//     const claims = await Claim.find()
+//       .sort({ [sortField]: sortOrder })
+//       .skip(skip)
+//       .limit(limit);
+
+//     const totalClaims = await Claim.countDocuments();
+
+//     res.json({
+//       claims,
+//       currentPage: page,
+//       totalPages: Math.ceil(totalClaims / limit),
+//       totalClaims,
+//     });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error fetching claims", error: error.message });
+//   }
+// };
 // End By Michael
 
 // ---------Start by Daniel-----------
 
-exports.sortUserClaims = async (req, res) => {
-  try {
-    const userId = req.session.user._id;
-    const expr = req.body.field;
-
-    if (typeof req.session.sortOrders === "undefined") {
-      req.session.sortOrders = {
-        policyNumberSort: 1,
-        amountSort: 1,
-        createdAtSort: 1,
-        statusSort: 1,
-      };
-    }
-
-    req.session.sortOrders[`${expr}Sort`] =
-      req.session.sortOrders[`${expr}Sort`] === 1 ? -1 : 1;
-
-    const order = req.session.sortOrders[`${expr}Sort`];
-
-    const page = parseInt(req.query.page) || 1; // Current page
-    const limit = parseInt(req.query.limit) || 10; // Items per page
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const totalDocs = await Claim.countDocuments({ userId: userId }).exec();
-    const totalPages = Math.ceil(totalDocs / limit);
-
-    const allClaims = await Claim.find({ userId: userId });
-
-    // Get paginated data
-
-    const claims = await Claim.find({ userId: userId })
-      .sort({ [expr]: order })
-      .skip(startIndex)
-      .limit(limit)
-      .exec();
-
-    // console.log("👋👋👋👋 claims", claims);
-
-    res.render("test", {
-      allClaims: allClaims,
-      claims: claims,
-      currentPage: page,
-      totalPages: totalPages,
-      limit: limit,
-      sortOrders: req.session.sortOrders,
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
 // exports.sortUserClaims = async (req, res) => {
 //   try {
 //     const userId = req.session.user._id;

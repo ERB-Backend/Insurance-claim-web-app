@@ -18,7 +18,7 @@ function addUserInfo(req, res, next) {
   //     })
   //   }
   // }
-  console.log("Locals in Middleware", res.locals._id);
+  // console.log("Locals in Middleware", res.locals._id);
   next();
 }
 
