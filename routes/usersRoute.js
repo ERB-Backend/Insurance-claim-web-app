@@ -83,15 +83,15 @@ async function getClaimsWithMessages(userId) {
           date: "$messages.date",
           messageText: {
             $concat: [
-              "Your claim of policy #",
+              "#",
               { $toString: "$policyNumber" },
               " was ",
               "$messages.status",
               " on ",
               { $dateToString: { format: "%d %b %Y", date: "$messages.date" } },
-              " **Ref No. ",
+              " [Ref No. ",
               { $toString: "$claimNumber" },
-              "**",
+              "]",
             ],
           },
         },
